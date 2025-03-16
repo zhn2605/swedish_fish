@@ -1,7 +1,7 @@
 # Compiler and flags
 CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++17 -I./include -I/usr/include/SDL2 -I/usr/include/GL
-LDFLAGS = -lSDL2 -lGL -lGLEW
+CXXFLAGS = -Wall -Wextra -std=c++17 -I./include -I/usr/include/SDL3 -I/usr/include/GL
+LDFLAGS = -lSDL2 -lGL
 
 # Directories
 SRC_DIR = src

@@ -3,11 +3,12 @@
         "*.h": "cpp",
         "*.cpp": "cpp"
     },
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "C_Cpp.default.includePath": [
+        "${workspaceFolder}/**",
         "${workspaceFolder}/include",
-        "/usr/include/SDL3",
-        "/usr/include/GL"
+        "/usr/include/SDL3/",
+        "/usr/include/GL/"
     ],
     "C_Cpp.default.compilerPath": "/usr/bin/g++",
     "C_Cpp.default.cppStandard": "c++17"

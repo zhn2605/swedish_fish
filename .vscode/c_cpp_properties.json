@@ -4,7 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/include/**",
+                "${workspaceFolder}/include/",
+                "include",
                 "/usr/include/SDL3",
                 "/usr/include/GL"
             ],
