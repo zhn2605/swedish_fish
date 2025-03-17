@@ -18,7 +18,7 @@ void App::Initialize() {
     //     std::cout << "- " << SDL_GetVideoDriver(i) << std::endl;
     // }
 
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+    if (SDL_Init(SDL_INIT_VIDEO) == 0) {
         SDL_Log("SDL3 Init Error: %s\n", SDL_GetError());
         exit(1);
     } else {
@@ -70,6 +70,18 @@ void App::Terminate() {
 // Setters
 void App::setActive(bool value) {
     active = value;
+}
+
+void App::update() {
+    // std::cout << "HEY MAN!!";
+    SDL_Event e;
+    while (SDL_PollEvent(&e)) {
+        switch (e.type) {
+            case SDL_EVENT_QUIT:
+                exit(1);
+        }
+    }
+    SDL_GL_SwapWindow(window);
 }
 
 void App::setWidth(int value) {

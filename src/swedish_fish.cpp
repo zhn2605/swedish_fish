@@ -7,6 +7,7 @@ int main(void) {
   app.Initialize();
 
   while (app.isActive()) {
+    app.update();
     // inf loop for testing
   }
 
