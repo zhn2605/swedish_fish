@@ -2,7 +2,6 @@
 #include "../include/app.hpp"
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_hints.h>
-#include <SDL3/SDL_oldnames.h>
 #include <SDL3/SDL_video.h>
 #include <iostream>
 
@@ -13,19 +12,17 @@ App::App(int width, int height, const char* title) {
 }
 
 void App::Initialize() {
-    // SDL3 is modular and requires explicit back end selection
-    SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "opengl");
-    SDL_Log("Current video backend: %s", SDL_GetCurrentVideoDriver());
-
-    int numDrivers = SDL_GetNumVideoDrivers();
-    std::cout << "Available SDL Video Drivers:\n";
-    for (int i = 0; i < numDrivers; ++i) {
-        std::cout << "- " << SDL_GetVideoDriver(i) << std::endl;
-    }
+    // int numDrivers = SDL_GetNumVideoDrivers();
+    // std::cout << "Available SDL Video Drivers:\n";
+    // for (int i = 0; i < numDrivers; ++i) {
+    //     std::cout << "- " << SDL_GetVideoDriver(i) << std::endl;
+    // }
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         SDL_Log("SDL3 Init Error: %s\n", SDL_GetError());
         exit(1);
+    } else {
+        SDL_Log("Current video backend: %s", SDL_GetCurrentVideoDriver());
     }
 
     // Set GL attributes
@@ -41,8 +38,7 @@ void App::Initialize() {
         windowTitle,            // title name
         screenWidth,                // width
         screenHeight,               // height
-        SDL_WINDOW_OPENGL | 
-            SDL_WINDOW_RESIZABLE        // Unit32 flags
+        SDL_WINDOW_OPENGL        // Unit32 flags
     );
 
     if (!window) {
