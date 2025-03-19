@@ -1,0 +1,18 @@
+# Build directories
+/bin/
+/build/
+
+*.o
+
+*.gch
+*.pch
+
+*.lib
+*.a
+*.la
+*.lo
+
+*.dll
+*.so
+*.so.*
+*.dylib

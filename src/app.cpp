@@ -1,7 +1,9 @@
  // I knowt this looks ugly ash i dont know why its not working
 #include "../include/app.hpp"
+#include "../include/glad/glad.h"
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_hints.h>
+#include <SDL3/SDL_oldnames.h>
 #include <SDL3/SDL_video.h>
 #include <iostream>
 
@@ -58,11 +60,18 @@ void App::Initialize() {
         exit(1);
     }
 
+    // Initialize glad
+    if (gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress) == 0) {
+        SDL_Log("Could not initialize glad: %s\n", SDL_GetError());
+        exit(1);
+    }
+
     // Set application to active
     active = true;
 }
 
 void App::Terminate() {
+    SDL_GL_DestroyContext(openGLContext);
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
@@ -74,6 +83,7 @@ void App::setActive(bool value) {
 
 void App::update() {
     // std::cout << "HEY MAN!!";
+    SDL_GL_SwapWindow(window);
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
         switch (e.type) {
@@ -81,7 +91,6 @@ void App::update() {
                 exit(1);
         }
     }
-    SDL_GL_SwapWindow(window);
 }
 
 void App::setWidth(int value) {

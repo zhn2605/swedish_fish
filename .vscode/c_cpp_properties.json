@@ -3,9 +3,7 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**",
                 "${workspaceFolder}/include/",
-                "include",
                 "/usr/include/SDL3",
                 "/usr/include/GL"
             ],
@@ -14,7 +12,15 @@
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "linux-gcc-x64",
-            "configurationProvider": "ms-vscode.makefile-tools"
+            "configurationProvider": "ms-vscode.makefile-tools",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}",
+                    "${workspaceFolder}/include"
+                ],
+                "limitSymbolsToIncludeHeaders": true,
+                "databaseFilename": ""
+            }
         }
     ],
     "version": 4

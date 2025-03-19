@@ -35,6 +35,11 @@ $(TARGET): $(OBJS)
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+# Print sources
+print-srcs:
+	@echo "Source files found:"
+	@echo $(SRCS)
+
 # Debug build with symbols
 debug: CXXFLAGS += -g -DDEBUG
 debug: all
