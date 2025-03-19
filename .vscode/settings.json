@@ -1,7 +1,8 @@
 {
     "files.associations": {
         "*.h": "cpp",
-        "*.cpp": "cpp"
+        "*.cpp": "cpp",
+        "iostream": "cpp"
     },
     "editor.formatOnSave": false,
     "C_Cpp.default.includePath": [

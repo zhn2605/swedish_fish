@@ -17,6 +17,8 @@ public:
     void setWidth(int value);
     void setHeight(int value);
 
+    void update();
+
     // Getters
     int getWidth();
     int getHeight();
