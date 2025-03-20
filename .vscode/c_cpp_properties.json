@@ -6,7 +6,8 @@
                 "${workspaceFolder}/include",
                 "/usr/include",
                 "/usr/include/SDL3",
-                "/usr/include/GL"
+                "/usr/include/GL",
+                "/usr/local/include/glm"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/g++",

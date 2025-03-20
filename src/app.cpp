@@ -78,6 +78,7 @@ void App::setActive(bool value) {
     active = value;
 }
 
+// TODO: Move to input class 
 void App::update() {
     // std::cout << "HEY MAN!!";
     SDL_GL_SwapWindow(window);

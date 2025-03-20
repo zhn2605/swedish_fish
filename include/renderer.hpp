@@ -1,5 +1,11 @@
-#ifndef RENDERER_HPP
-#define RENDERER_HPP
+#ifndef RENDERER_H
+#define RENDERER_H
+
+#include <glad/glad.h>
+#include <vector>
+#include <memory>
+
+#include <particle.hpp>
 
 class Renderer {
 public:
@@ -8,6 +14,8 @@ public:
     void PrepareDraw();
 
 private:
+    std::vector<Particle> particles;
+
 };
 
 #endif
