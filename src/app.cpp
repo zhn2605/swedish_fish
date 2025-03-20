@@ -1,10 +1,7 @@
  // I knowt this looks ugly ash i dont know why its not working
-#include "../include/app.hpp"
-#include "../include/glad/glad.h"
-#include <SDL3/SDL_error.h>
-#include <SDL3/SDL_hints.h>
-#include <SDL3/SDL_oldnames.h>
-#include <SDL3/SDL_video.h>
+#include <app.hpp>
+#include <glad/glad.h>
+#include <SDL3/SDL.h>
 #include <iostream>
 
 App::App(int width, int height, const char* title) {
