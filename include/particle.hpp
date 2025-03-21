@@ -6,7 +6,7 @@
 
 struct Vertex{
     
-}
+};
 
 class Particle{
 public:

@@ -6,16 +6,24 @@
 #include <memory>
 
 #include <particle.hpp>
+#include <shader.hpp>
 
 class Renderer {
 public:
-    Renderer();
+    Renderer(Shader s);
 
     void PrepareDraw();
+    void TestSquare();
+    void CleanUp();
 
 private:
     std::vector<Particle> particles;
 
+    Shader shader;
+
+    unsigned int EBO;
+    unsigned int VBO;
+    unsigned int VAO;
 };
 
 #endif
