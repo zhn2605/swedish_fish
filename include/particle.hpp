@@ -2,21 +2,30 @@
 #define PARTICLE_H
 
 #include <vector>
-
-
-struct Vertex{
-    
-};
+#include <math.h>
 
 class Particle{
 public:
-    Particle(int radius);
+    Particle(float r, int sect, int stack);
+    void Initialize();
 
-    
+    // setters
+    void setRadius(int r);
+    void setSectorCount(int sect);
+    void setStackCount(int stack);
+
+    // getters
+    std::vector<float> getVertices();
+    std::vector<unsigned int> getIndices();
 
 private:
-    void initialize();
-    std::vector<float> verticies;
+    float radius;
+    int sectorCount, stackCount;
+    
+    void GenerateVertices();
+    void GenerateIndices();
+    std::vector<float> vertices;
+    std::vector<unsigned int> indices;
 };
 
 #endif

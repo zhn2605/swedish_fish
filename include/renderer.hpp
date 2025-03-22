@@ -16,6 +16,10 @@ public:
     void TestSquare();
     void CleanUp();
 
+    void AddParticle(Particle particle);
+    void DrawObject(std::vector<float> vertices, std::vector<unsigned int> indices);
+    void DrawParticles();
+
 private:
     std::vector<Particle> particles;
 

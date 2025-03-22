@@ -1,0 +1,67 @@
+#include <particle.hpp>
+
+Particle::Particle(float r, int sect, int stack) {
+    radius = r;
+    sectorCount = sect;
+    stackCount = stack;
+}
+
+void Particle::GenerateVertices() {
+    float x, y, z, xy;
+    float sectorStep = 2 * M_PI / sectorCount;
+    float stackStep = M_PI / stackCount;
+    float sectorAngle, stackAngle;
+
+    for(int i = 0; i <= stackCount; ++i) {
+        stackAngle = M_PI / 2 - i * stackStep;
+        xy = radius * cosf(stackAngle);             // r * cos(u)
+        z = radius * sinf(stackAngle);              // r * sin(u)
+
+        for(int j = 0;j<= sectorCount; ++j) {
+            sectorAngle =j * sectorStep;
+
+            // vertex position (x, y, z)
+            x = xy * cosf(sectorAngle);
+            y = xy * sinf(sectorAngle);
+            vertices.push_back(x);
+            vertices.push_back(y);
+            vertices.push_back(z);
+        }
+    }
+}
+
+void Particle::GenerateIndices() {
+    int k1, k2;
+    for(int i = 0; i < stackCount; ++i) {
+        k1 = i * (sectorCount + 1);
+        k2 = k1 + sectorCount + 1;
+
+        for(int j = 0; j < sectorCount; ++j, ++k1, ++k2) {
+            if (i != 0) {
+                indices.push_back(k1);
+                indices.push_back(k2);
+                indices.push_back(k1 + 1);
+            }
+
+            if (i!= (stackCount - 1)) {
+                indices.push_back(k1 + 1);
+                indices.push_back(k2);
+                indices.push_back(k2 +1);
+            }
+        }
+    }
+}
+
+void Particle::Initialize() {
+    GenerateVertices();
+    GenerateIndices(); 
+}
+
+// Setters
+void Particle::setRadius(int r) { radius = r; }
+void Particle::setSectorCount(int sect) { sectorCount = sect; }
+void Particle::setStackCount(int stack) { stackCount = stack; }
+
+// Getters
+std::vector<float> Particle::getVertices() { return vertices; }
+std::vector<unsigned int> Particle::getIndices() { return indices; }
