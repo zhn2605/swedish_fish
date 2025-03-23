@@ -30,7 +30,7 @@ void Physics::Update(Particle& particle) {
     //particle.UpdateColor();
 
     // Debug
-    printf("Particle y value: %f\n", particle.getPosition().y);
+    // printf("Particle y value: %f\n", particle.getPosition().y);
 }
 
 void Physics::CalcVelocity(Particle particle) {

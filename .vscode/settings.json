@@ -75,7 +75,11 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "valarray": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "complex": "cpp",
+        "coroutine": "cpp",
+        "future": "cpp",
+        "cfenv": "cpp"
     },
     "editor.formatOnSave": false,
     "C_Cpp.default.includePath": [
