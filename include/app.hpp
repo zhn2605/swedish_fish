@@ -20,6 +20,7 @@ public:
     void update();
 
     // Getters
+    float getAspectRatio() const;
     int getWidth();
     int getHeight();
     SDL_Window* getWindow();

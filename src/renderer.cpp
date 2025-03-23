@@ -1,6 +1,6 @@
 #include <renderer.hpp>
 
-Renderer::Renderer(Shader s) : shader(s) {
+Renderer::Renderer(Shader s, Camera cam) : shader(s), camera(cam) {
     // other stuff
 }
 
@@ -9,6 +9,13 @@ void Renderer::PrepareDraw() {
     glDisable(GL_CULL_FACE);
     glClearColor(1.0f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    shader.use();
+}
+
+void Renderer::UpdateCamera() {
+    shader.setUniformMat4("view", camera.GetViewMatrix());
+    shader.setUniformMat4("projection", camera.GetProjectionMatrix());
 }
 
 void Renderer::TestSquare() {
@@ -56,7 +63,12 @@ void Renderer::AddParticle(Particle particle) {
     particles.push_back(particle);
 }
 
-void Renderer::DrawObject(std::vector<float> vertices, std::vector<unsigned int> indices) {
+void Renderer::DrawParticle(Particle particle) {
+    shader.setUniformMat4("model", particle.getModelMatrix());
+
+    std::vector<float> vertices = particle.getVertices();
+    std::vector<unsigned int> indices = particle.getIndices();
+
     // Bind VAO
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
@@ -77,8 +89,6 @@ void Renderer::DrawObject(std::vector<float> vertices, std::vector<unsigned int>
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    shader.use();
-
     // Draw
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
@@ -86,7 +96,13 @@ void Renderer::DrawObject(std::vector<float> vertices, std::vector<unsigned int>
 
 void Renderer::DrawParticles() {
     for (Particle currParticle : particles) {
-        DrawObject(currParticle.getVertices(), currParticle.getIndices());
+        DrawParticle(currParticle);
+    }
+}
+
+void Renderer::UpdateParticles() {
+    for (Particle currParticle: particles) {
+        currParticle.UpdateModelMatrix();
     }
 }
 

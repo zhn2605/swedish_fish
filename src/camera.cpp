@@ -2,18 +2,21 @@
 
 Camera::Camera(float sens) {
     sensitivity = sens / 10.0f;
-    eye = glm::vec3(0.0f, 0.0f, 0.0f);
+    eye = glm::vec3(0.0f, 0.0f, 30.0f);
     lookDirection = glm::vec3(0.0f, 0.0f, -1.0f);
     upVector = glm::vec3(0.0f, 1.0f, 0.0f);
 
     fovy = 60.0f;
-    aspectRatio = 1.0f;
+    aspect = 1.0f;
     near = 0.01f;
     far = 50.0f;
+
+    UpdateMatrices();
 }
 
-void Camera::UpdateAspectRatio(float aspectRatio) {
-    projectionMatrix = glm::perspective(fovy, aspectRatio, near, far);
+void Camera::UpdateMatrices() {
+    projectionMatrix = glm::perspective(glm::radians(fovy), aspect, near, far);
+    viewMatrix = glm::lookAt(eye, eye + lookDirection, upVector);
 }
 
 void Camera::MouseLook(int mouseX, int mouseY) {
@@ -58,9 +61,13 @@ void Camera::MoveDown(float speed) {
     eye.y -= glm::normalize(upVector).y * speed;
 }
 
+void Camera::SetAspectRatio(float value) {
+    aspect = value;
+    UpdateMatrices();
+}
+
 void Camera::SetFovy(float value) {
     fovy = value;
-    projectionMatrix = glm::perspective(glm::radians(fovy), aspectRatio, near, far);
 }
 
 void Camera::SetEyePosition(glm::vec3 position) {
@@ -78,5 +85,5 @@ glm::mat4 Camera::GetProjectionMatrix() const {
 }
 
 glm::mat4 Camera::GetViewMatrix() const {
-    return glm::lookAt(eye, eye + lookDirection, upVector);
+    return viewMatrix;
 }

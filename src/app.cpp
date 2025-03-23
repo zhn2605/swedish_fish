@@ -102,6 +102,7 @@ void App::setHeight(int value) {
 // Getters
 SDL_Window* App::getWindow() { return window; }
 SDL_GLContext App::getContext() { return openGLContext; }
+float App::getAspectRatio() const { return (float)screenWidth / (float)screenHeight; }
 bool App::isActive() { return active; }
 int App::getWidth() { return screenWidth; }
 int App::getHeight() { return screenHeight; }

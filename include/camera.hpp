@@ -1,6 +1,8 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "glm/gtx/rotate_vector.hpp"
@@ -10,7 +12,9 @@ class Camera {
 public:
     Camera(float sens);
 
-    void UpdateAspectRatio(float aspect);
+    void UpdateProjectionMatrix();
+    void UpdateViewMatrix();
+    void UpdateMatrices();
 
     void MouseLook(int mouseX, int mouseY);
 	void MoveForward(float speed);
@@ -20,6 +24,7 @@ public:
 	void MoveUp(float speed);
 	void MoveDown(float speed);
 
+    void SetAspectRatio(float value);
 	void SetProjectionMatrix(float fovy, float aspect, float near, float far);
 	void SetFovy(float fovy);
 	void SetEyePosition(glm::vec3 position);
@@ -32,6 +37,7 @@ public:
 
 private:
     glm::mat4 projectionMatrix;
+    glm::mat4 viewMatrix;
 
     glm::vec3 eye;
     glm::vec3 lookDirection;
@@ -39,7 +45,7 @@ private:
 
     float sensitivity;
     float fovy;
-    float aspectRatio;
+    float aspect;
     float near;
     float far;
 

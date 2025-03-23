@@ -1,9 +1,13 @@
 #include <particle.hpp>
+#include <iostream>
 
-Particle::Particle(float r, int sect, int stack) {
+Particle::Particle(float r, int sect, int stack) : position(0.0f, 0.0f, 0.0f), modelMatrix(1.0f) {
     radius = r;
     sectorCount = sect;
     stackCount = stack;
+
+    position = glm::vec3(0.0f, 0.0f, 0.0f);
+    modelMatrix = glm::mat4(1.0f);
 }
 
 void Particle::GenerateVertices() {
@@ -17,7 +21,7 @@ void Particle::GenerateVertices() {
         xy = radius * cosf(stackAngle);             // r * cos(u)
         z = radius * sinf(stackAngle);              // r * sin(u)
 
-        for(int j = 0;j<= sectorCount; ++j) {
+        for(int j = 0; j <= sectorCount; ++j) {
             sectorAngle =j * sectorStep;
 
             // vertex position (x, y, z)
@@ -43,7 +47,7 @@ void Particle::GenerateIndices() {
                 indices.push_back(k1 + 1);
             }
 
-            if (i!= (stackCount - 1)) {
+            if (i != (stackCount - 1)) {
                 indices.push_back(k1 + 1);
                 indices.push_back(k2);
                 indices.push_back(k2 +1);
@@ -57,11 +61,22 @@ void Particle::Initialize() {
     GenerateIndices(); 
 }
 
+void Particle::UpdateModelMatrix() {
+    // printf("position of sphere: <%f, %f, %f>", position.x, position.y, position.z);
+    modelMatrix = glm::translate(modelMatrix, position);
+}
+
 // Setters
 void Particle::setRadius(int r) { radius = r; }
 void Particle::setSectorCount(int sect) { sectorCount = sect; }
 void Particle::setStackCount(int stack) { stackCount = stack; }
+void Particle::setPosition(float x, float y, float z) { 
+    position = glm::vec3(x, y, z); 
+    UpdateModelMatrix();
+}
 
 // Getters
 std::vector<float> Particle::getVertices() { return vertices; }
 std::vector<unsigned int> Particle::getIndices() { return indices; }
+glm::mat4 Particle::getModelMatrix() { return modelMatrix; }
+glm::vec3 Particle::getPosition() { return position; }

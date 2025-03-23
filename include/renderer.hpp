@@ -7,23 +7,28 @@
 
 #include <particle.hpp>
 #include <shader.hpp>
+#include <camera.hpp>
 
 class Renderer {
 public:
-    Renderer(Shader s);
+    Renderer(Shader s, Camera cam);
 
     void PrepareDraw();
     void TestSquare();
     void CleanUp();
 
+    void UpdateCamera();
+
     void AddParticle(Particle particle);
-    void DrawObject(std::vector<float> vertices, std::vector<unsigned int> indices);
+    void UpdateParticles();
+    void DrawParticle(Particle particle);
     void DrawParticles();
 
 private:
     std::vector<Particle> particles;
 
     Shader shader;
+    Camera camera;
 
     unsigned int EBO;
     unsigned int VBO;
