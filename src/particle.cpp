@@ -1,6 +1,9 @@
 #include <particle.hpp>
 #include <iostream>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/rotate_vector.hpp>
+
 Particle::Particle(float r, int sect, int stack) : position(0.0f, 0.0f, 0.0f), modelMatrix(1.0f) {
     radius = r;
     sectorCount = sect;
@@ -62,6 +65,7 @@ void Particle::Initialize() {
 }
 
 void Particle::UpdateModelMatrix() {
+    modelMatrix = glm::mat4(1.f);
     // printf("position of sphere: <%f, %f, %f>", position.x, position.y, position.z);
     modelMatrix = glm::translate(modelMatrix, position);
 }

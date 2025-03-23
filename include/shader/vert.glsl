@@ -8,6 +8,5 @@ uniform vec3 pos;
 
 void main()
 {
-    vec3 translated = aPos + pos;
-    gl_Position = projection * view * vec4(translated, 1.0);
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
 }
