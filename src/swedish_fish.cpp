@@ -4,6 +4,8 @@
 #include <shader.hpp>
 #include <renderer.hpp>
 #include <particle.hpp>
+#include <physics.hpp>
+#include <camera.hpp>
 
 int main(void) {
   std::string vertexFilePath = "./include/shader/vert.glsl";

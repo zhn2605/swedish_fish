@@ -1,5 +1,5 @@
-#ifndef PHYSICS_H
-#define PHYSICS_H
+#ifndef PHYSICS_HPP
+#define PHYSICS_HPP
 
 #include <glm/glm.hpp>
 
