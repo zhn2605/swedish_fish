@@ -34,7 +34,7 @@ int main(void) {
   
   Physics physics(delta_time, gravity, surface_tension);
 
-  Renderer renderer(shader, camera);
+  Renderer renderer(2);
   renderer.AddParticle(particle);
   renderer.UpdateParticles(physics);
 
@@ -49,18 +49,19 @@ int main(void) {
     app.update();
 
     // Prepares gl buffers etc.
-    renderer.PrepareDraw();
+    renderer.PrepareDraw(shader);
     camera.UpdateMatrices();
 
     // Update Renderer / physics
-    renderer.UpdateCamera();
+    renderer.UpdateCamera(shader, camera);
     renderer.UpdateParticles(physics);
 
     // Draw
-    renderer.DrawParticles();
+    renderer.DrawParticles(shader);
   }
 
   renderer.CleanUp();
+  shader.destroy();
   app.Terminate();
 
   std::cout << "Goodbye!" << std::endl;

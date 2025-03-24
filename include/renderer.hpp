@@ -12,24 +12,21 @@
 
 class Renderer {
 public:
-    Renderer(Shader s, Camera cam);
+    Renderer(int value);
 
-    void PrepareDraw();
+    void PrepareDraw(Shader& shader);
     void TestSquare();
     void CleanUp();
 
-    void UpdateCamera();
+    void UpdateCamera(Shader& shader, Camera& camera);
 
     void AddParticle(Particle& particle);
     void UpdateParticles(Physics physics);
-    void DrawParticle(Particle& particle);
-    void DrawParticles();
+    void DrawParticle(Particle& particle, Shader& shader);
+    void DrawParticles(Shader& shader);
 
 private:
     std::vector<Particle> particles;
-
-    Shader shader;
-    Camera camera;
 
     unsigned int EBO;
     unsigned int VBO;
