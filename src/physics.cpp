@@ -6,7 +6,7 @@ Physics::Physics(float dt=0.1f, float a=-9.81f, float surfTens=72.0f) {
     surface_tension = surfTens;
 }
 
-void Physics::Update(Particle particle) {
+void Physics::Update(Particle& particle) {
     glm::vec3 initial_pos = particle.getPosition();
     glm::vec3 initial_vel = particle.getVelocity();
 
@@ -28,6 +28,9 @@ void Physics::Update(Particle particle) {
     // Apply necessary updates within particle
     particle.UpdateModelMatrix();
     //particle.UpdateColor();
+
+    // Debug
+    printf("Particle y value: %f\n", particle.getPosition().y);
 }
 
 void Physics::CalcVelocity(Particle particle) {

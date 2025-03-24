@@ -1,6 +1,7 @@
 #ifndef PHYSICS_HPP
 #define PHYSICS_HPP
 
+#include <iostream>
 #include <glm/glm.hpp>
 #include <particle.hpp>
 
@@ -9,7 +10,7 @@ public:
     Physics(float dt, float a, float surfTens);
 
     // Update
-    void Update(Particle particle);      // over arching update function 
+    void Update(Particle& particle);      // over arching update function 
     
     // Helper functions
     void CalcVelocity(Particle particle);

@@ -59,11 +59,11 @@ void Renderer::TestSquare() {
 }
 
 
-void Renderer::AddParticle(Particle particle) {
+void Renderer::AddParticle(Particle& particle) {
     particles.push_back(particle);
 }
 
-void Renderer::DrawParticle(Particle particle) {
+void Renderer::DrawParticle(Particle& particle) {
     shader.setUniformMat4("model", particle.getModelMatrix());
 
     std::vector<float> vertices = particle.getVertices();
@@ -95,13 +95,13 @@ void Renderer::DrawParticle(Particle particle) {
 }
 
 void Renderer::DrawParticles() {
-    for (Particle currParticle : particles) {
+    for (Particle& currParticle : particles) {
         DrawParticle(currParticle);
     }
 }
 
 void Renderer::UpdateParticles(Physics physics) {
-    for (Particle currParticle: particles) {
+    for (Particle& currParticle: particles) {
         physics.Update(currParticle);
     }
 }

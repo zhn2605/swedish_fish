@@ -20,12 +20,9 @@ public:
 
     void UpdateCamera();
 
-    void AddParticle(Particle particle);
+    void AddParticle(Particle& particle);
     void UpdateParticles(Physics physics);
-    void DrawParticle(Particle particle);
-
-
-    void InitializeParticle(Particle particle);
+    void DrawParticle(Particle& particle);
     void DrawParticles();
 
 private:

@@ -12,7 +12,7 @@
 std::string vertexFilePath = "./include/shader/vert.glsl";
 std::string fragmentFilePath = "./include/shader/frag.glsl";
 float delta_time = 0.0f;
-float gravity = -9.81f;
+float gravity = -1.0f;
 float surface_tension = 72.0f;
 
 int main(void) {
@@ -30,7 +30,7 @@ int main(void) {
 
   Particle particle(1.0f, 36, 18);
   particle.Initialize();
-  particle.setPosition(glm::vec3(0.0f, 0.0f, 25.0f));
+  particle.setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
   
   Physics physics(delta_time, gravity, surface_tension);
 
