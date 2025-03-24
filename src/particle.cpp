@@ -11,6 +11,8 @@ Particle::Particle(float r, int sect, int stack) : position(0.0f, 0.0f, 0.0f), m
 
     position = glm::vec3(0.0f, 0.0f, 0.0f);
     modelMatrix = glm::mat4(1.0f);
+
+    Initialize();
 }
 
 void Particle::GenerateVertices() {

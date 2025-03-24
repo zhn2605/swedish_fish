@@ -3,7 +3,7 @@
 Camera::Camera(float sens) {
     sensitivity = sens / 10.0f;
     eye = glm::vec3(0.0f, 0.0f, 10.0f);
-    lookDirection = glm::vec3(0.0f, 0.0f, -1.0f);
+    lookDirection = glm::vec3(0.0f, 0.0f, 1.0f);
     upVector = glm::vec3(0.0f, 1.0f, 0.0f);
 
     fovy = 60.0f;

@@ -27,15 +27,21 @@ int main(void) {
 
   Camera camera(1.0f); // sensitivity
   camera.SetAspectRatio(app.getAspectRatio());
+  camera.SetEyePosition(glm::vec3(0.0f, 0.0f, -5.0f));
 
+  // Particles
+  Renderer renderer(2);
   Particle particle(1.0f, 36, 18);
-  particle.Initialize();
-  particle.setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
+  for (int i = 0; i < 10; i++) {
+    Particle curr_particle = particle;
+    curr_particle.setPosition(glm::vec3(0.0f + i, 0.0f, 5.0f + i));
+    renderer.AddParticle(curr_particle);
+
+    curr_particle.setPosition(glm::vec3(0.0f - i, 0.0f, 5.0f + i));
+    renderer.AddParticle(curr_particle);
+  }
   
   Physics physics(delta_time, gravity, surface_tension);
-
-  Renderer renderer(2);
-  renderer.AddParticle(particle);
   renderer.UpdateParticles(physics);
 
   while (app.isActive()) {
