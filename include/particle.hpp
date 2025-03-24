@@ -11,30 +11,37 @@ public:
     Particle(float r, int sect, int stack);
     void Initialize();
     void UpdateModelMatrix();
+    void UpdateColor();
 
-    // setters
+    // Setters
     void setRadius(int r);
     void setSectorCount(int sect);
     void setStackCount(int stack);
-    void setPosition(float x, float y, float z);
+    void setPosition(glm::vec3 vec);
+    void setVelocity(glm::vec3 vec);
 
-    // getters
+    // Getters
     std::vector<float> getVertices();
     std::vector<unsigned int> getIndices();
     glm::mat4 getModelMatrix();
     glm::vec3 getPosition();
+    glm::vec3 getVelocity();
 
 private:
+    // Particle properties
     float radius;
     int sectorCount, stackCount;
+    std::vector<float> vertices;
+    std::vector<unsigned int> indices;
     
+    // Particle initialization functions
     void GenerateVertices();
     void GenerateIndices();
 
+    // Particle physics data 
     glm::vec3 position;
+    glm::vec3 velocity;
     glm::mat4 modelMatrix;
-    std::vector<float> vertices;
-    std::vector<unsigned int> indices;
 };
 
 #endif

@@ -8,6 +8,7 @@
 #include <particle.hpp>
 #include <shader.hpp>
 #include <camera.hpp>
+#include <physics.hpp>
 
 class Renderer {
 public:
@@ -20,8 +21,11 @@ public:
     void UpdateCamera();
 
     void AddParticle(Particle particle);
-    void UpdateParticles();
+    void UpdateParticles(Physics physics);
     void DrawParticle(Particle particle);
+
+
+    void InitializeParticle(Particle particle);
     void DrawParticles();
 
 private:

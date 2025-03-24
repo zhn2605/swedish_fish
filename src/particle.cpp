@@ -70,9 +70,11 @@ void Particle::UpdateModelMatrix() {
 void Particle::setRadius(int r) { radius = r; }
 void Particle::setSectorCount(int sect) { sectorCount = sect; }
 void Particle::setStackCount(int stack) { stackCount = stack; }
-void Particle::setPosition(float x, float y, float z) { 
-    position = glm::vec3(x, y, z); 
-    UpdateModelMatrix();
+void Particle::setPosition(glm::vec3 vec) { 
+    position = vec; 
+}
+void Particle::setVelocity(glm::vec3 vec) {
+    velocity = vec;
 }
 
 // Getters
@@ -80,3 +82,4 @@ std::vector<float> Particle::getVertices() { return vertices; }
 std::vector<unsigned int> Particle::getIndices() { return indices; }
 glm::mat4 Particle::getModelMatrix() { return modelMatrix; }
 glm::vec3 Particle::getPosition() { return position; }
+glm::vec3 Particle::getVelocity() { return velocity; }

@@ -100,9 +100,9 @@ void Renderer::DrawParticles() {
     }
 }
 
-void Renderer::UpdateParticles() {
+void Renderer::UpdateParticles(Physics physics) {
     for (Particle currParticle: particles) {
-        currParticle.UpdateModelMatrix();
+        physics.Update(currParticle);
     }
 }
 
