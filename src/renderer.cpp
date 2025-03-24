@@ -21,13 +21,7 @@ void Renderer::AddParticle(Particle& particle) {
 }
 
 void Renderer::DrawParticle(Particle& particle, Shader& shader) {
-    shader.use();
-    GLint viewLoc = glGetUniformLocation(shader.ID, "view");
-    GLint projLoc = glGetUniformLocation(shader.ID, "projection");
-    GLint modelLoc = glGetUniformLocation(shader.ID, "model");
-    std::cout << "view: " << viewLoc << ", proj: " << projLoc << ", model: " << modelLoc << std::endl;
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(particle.getModelMatrix()));
-    shader.setUniformVec3("pos", particle.getPosition());
+    shader.setUniformMat4("model", particle.getModelMatrix());
 
     std::vector<float> vertices = particle.getVertices();
     std::vector<unsigned int> indices = particle.getIndices();

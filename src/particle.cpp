@@ -63,6 +63,8 @@ void Particle::Initialize() {
 
 void Particle::UpdateModelMatrix() {
     // printf("position of sphere: <%f, %f, %f>", position.x, position.y, position.z);
+    //FIXME: no fixes here. But i just want to note that this was the bane of my existence for three hours
+    modelMatrix = glm::mat4(1.0f);
     modelMatrix = glm::translate(modelMatrix, position);
 }
 
