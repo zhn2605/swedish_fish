@@ -13,8 +13,7 @@ public:
     void Update(Particle& particle);      // over arching update function 
     
     // Helper functions
-    void CalcVelocity(Particle particle);
-    void CalcCollision(Particle particle);
+    float CalcVelMagnitude(Particle& particle);
 
     // Setters
     void SetDeltaTime(float dt);

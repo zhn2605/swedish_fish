@@ -1,11 +1,11 @@
 #include <renderer.hpp>
 
-Renderer::Renderer(int value) {}
+Renderer::Renderer() {}
 
 void Renderer::PrepareDraw(Shader& shader) {
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
-    glClearColor(1.0f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     shader.use();
@@ -22,6 +22,7 @@ void Renderer::AddParticle(Particle& particle) {
 
 void Renderer::DrawParticle(Particle& particle, Shader& shader) {
     shader.setUniformMat4("model", particle.getModelMatrix());
+    shader.setUniformVec3("color", particle.getColor());
 
     std::vector<float> vertices = particle.getVertices();
     std::vector<unsigned int> indices = particle.getIndices();

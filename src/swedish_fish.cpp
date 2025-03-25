@@ -12,7 +12,7 @@
 std::string vertexFilePath = "./include/shader/vert.glsl";
 std::string fragmentFilePath = "./include/shader/frag.glsl";
 float delta_time = 0.0f;
-float gravity = -1.0f;
+float gravity = -9.81f;
 float surface_tension = 72.0f;
 
 int main(void) {
@@ -30,16 +30,10 @@ int main(void) {
   camera.SetEyePosition(glm::vec3(0.0f, 0.0f, -5.0f));
 
   // Particles
-  Renderer renderer(2);
+  Renderer renderer;
   Particle particle(1.0f, 36, 18);
-  for (int i = 0; i < 10; i++) {
-    Particle curr_particle = particle;
-    curr_particle.setPosition(glm::vec3(0.0f + i, 0.0f, 5.0f + i));
-    renderer.AddParticle(curr_particle);
-
-    curr_particle.setPosition(glm::vec3(0.0f - i, 0.0f, 5.0f + i));
-    renderer.AddParticle(curr_particle);
-  }
+  particle.setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
+  renderer.AddParticle(particle);
   
   Physics physics(delta_time, gravity, surface_tension);
   renderer.UpdateParticles(physics);

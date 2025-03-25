@@ -69,21 +69,44 @@ void Particle::Initialize() {
 void Particle::UpdateModelMatrix() {
     modelMatrix = glm::mat4(1.f);
     // printf("position of sphere: <%f, %f, %f>", position.x, position.y, position.z);
-    //FIXME: no fixes here. But i just want to note that this was the bane of my existence for three hours
+    //FIXME: no fixes here. 
+    // But i just want to note that this was the bane of my existence for three hours
     modelMatrix = glm::mat4(1.0f);
     modelMatrix = glm::translate(modelMatrix, position);
+}
+
+void Particle::UpdateColor() {
+    float magnitude = sqrt(pow(velocity.x, 2) + pow(velocity.y, 2) + pow(velocity.z, 2));
+
+    glm::vec3 blue      = glm::vec3(0.2f, 0.4f, 1.0f);
+    glm::vec3 green     = glm::vec3(0.3686f, 1.0f, 0.321);
+    glm::vec3 yellow    = glm::vec3(1.0, 1.0, 0.4);
+    glm::vec3 orange    = glm::vec3(1.0f, 0.5f, 0.2f);
+    glm::vec3 red       = glm::vec3(1.0f, 0.3f, 0.3f);
+
+    if (magnitude <= 3.0f) {
+        color = blue;
+    } else if (magnitude <= 6.0f) {
+        float t = (magnitude - 3.0f) / (6.0f - 3.0f); // Normalize [0,1]
+        color = glm::mix(blue, green, t);
+    } else if (magnitude <= 9.0f) {
+        float t = (magnitude - 6.0f) / (9.0f - 6.0f);
+        color = glm::mix(green, yellow, t);
+    } else if (magnitude <= 12.0f) {
+        float t = (magnitude - 9.0f) / (12.0f - 9.0f);
+        color = glm::mix(yellow, orange, t);
+    } else {
+        float t = (magnitude - 12.0f) / (15.0f - 12.0f); // Clamp max around 15m/s
+        color = glm::mix(orange, red, glm::clamp(t, 0.0f, 1.0f));
+    }
 }
 
 // Setters
 void Particle::setRadius(int r) { radius = r; }
 void Particle::setSectorCount(int sect) { sectorCount = sect; }
 void Particle::setStackCount(int stack) { stackCount = stack; }
-void Particle::setPosition(glm::vec3 vec) { 
-    position = vec; 
-}
-void Particle::setVelocity(glm::vec3 vec) {
-    velocity = vec;
-}
+void Particle::setPosition(glm::vec3 vec) { position = vec; }
+void Particle::setVelocity(glm::vec3 vec) { velocity = vec; }
 
 // Getters
 std::vector<float> Particle::getVertices() { return vertices; }
@@ -91,3 +114,4 @@ std::vector<unsigned int> Particle::getIndices() { return indices; }
 glm::mat4 Particle::getModelMatrix() { return modelMatrix; }
 glm::vec3 Particle::getPosition() { return position; }
 glm::vec3 Particle::getVelocity() { return velocity; }
+glm::vec3 Particle::getColor() { return color; }

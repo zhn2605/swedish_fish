@@ -27,14 +27,16 @@ void Physics::Update(Particle& particle) {
 
     // Apply necessary updates within particle
     particle.UpdateModelMatrix();
-    //particle.UpdateColor();
+    float vel_magnitude = CalcVelMagnitude(particle);
+    particle.UpdateColor();
 
     // Debug
     // printf("Particle y value: %f\n", particle.getPosition().y);
 }
 
-void Physics::CalcVelocity(Particle particle) {
-    
+float Physics::CalcVelMagnitude(Particle& particle) {
+    glm::vec3 vel = particle.getVelocity();
+    return sqrt(vel.x*vel.x + vel.y*vel.y + vel.z*vel.z);
 }
 
 // Setters

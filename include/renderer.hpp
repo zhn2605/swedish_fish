@@ -12,10 +12,9 @@
 
 class Renderer {
 public:
-    Renderer(int value);
+    Renderer();
 
     void PrepareDraw(Shader& shader);
-    void TestSquare();
     void CleanUp();
 
     void UpdateCamera(Shader& shader, Camera& camera);
