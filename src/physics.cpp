@@ -27,7 +27,6 @@ void Physics::Update(Particle& particle) {
 
     // Apply necessary updates within particle
     particle.UpdateModelMatrix();
-    float vel_magnitude = CalcVelMagnitude(particle);
     particle.UpdateColor();
 
     // Debug
