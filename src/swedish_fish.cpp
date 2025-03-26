@@ -27,12 +27,15 @@ int main(void) {
 
   Camera camera(1.0f); // sensitivity
   camera.SetAspectRatio(app.getAspectRatio());
-  camera.SetEyePosition(glm::vec3(0.0f, 0.0f, -5.0f));
+  camera.SetEyePosition(glm::vec3(0.0f, 0.0f, -10.0f));
 
-  // Particles
+  // Rendering
   Renderer renderer;
-  Particle particle(1.0f, 36, 18);
-  particle.setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
+  renderer.CreateContainer(5.0f, 5.0f, 5.0f);
+  renderer.SetFrameMode(true);
+
+  Particle particle(0.2f, 36, 18);
+  particle.setPosition(glm::vec3(0.0f, 5.0f, 5.0f));
   renderer.AddParticle(particle);
   
   Physics physics(delta_time, gravity, surface_tension);
@@ -57,6 +60,7 @@ int main(void) {
     renderer.UpdateParticles(physics);
 
     // Draw
+    renderer.DrawContainer(shader, glm::vec3(0.0f), glm::vec3(0.0f, 45.0f, 0.0f), glm::vec3(1.0f));
     renderer.DrawParticles(shader);
   }
 
