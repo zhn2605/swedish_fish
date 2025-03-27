@@ -101,13 +101,14 @@ void Particle::UpdateColor() {
 }
 
 // Setters
-void Particle::setRadius(int r) { radius = r; }
+void Particle::setRadius(float r) { radius = r; }
 void Particle::setSectorCount(int sect) { sectorCount = sect; }
 void Particle::setStackCount(int stack) { stackCount = stack; }
 void Particle::setPosition(glm::vec3 vec) { position = vec; }
 void Particle::setVelocity(glm::vec3 vec) { velocity = vec; }
 
 // Getters
+float Particle::getRadius() { return radius; }
 std::vector<float> Particle::getVertices() { return vertices; }
 std::vector<unsigned int> Particle::getIndices() { return indices; }
 glm::mat4 Particle::getModelMatrix() { return modelMatrix; }

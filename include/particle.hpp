@@ -14,13 +14,14 @@ public:
     void UpdateColor();
 
     // Setters
-    void setRadius(int r);
+    void setRadius(float r);
     void setSectorCount(int sect);
     void setStackCount(int stack);
     void setPosition(glm::vec3 vec);
     void setVelocity(glm::vec3 vec);
 
     // Getters
+    float getRadius();
     std::vector<float> getVertices();
     std::vector<unsigned int> getIndices();
     glm::mat4 getModelMatrix();

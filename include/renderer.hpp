@@ -20,7 +20,7 @@ public:
     void AddParticle(Particle& particle);
     
     void UpdateCamera(Shader& shader, Camera& camera);
-    void UpdateParticles(Physics physics);
+    void UpdateParticles(Physics& physics);
 
     void DrawContainer(Shader& shader, glm::vec3 pos, glm::vec3 angle, glm::vec3 scale);
     void DrawParticle(Particle& particle, Shader& shader);
@@ -28,9 +28,11 @@ public:
     
     // Setters
     void SetFrameMode(bool value);
-
+    
     void CleanUp();
 
+    glm::vec3 container_min_bound;
+    glm::vec3 container_max_bound;
 private:
     std::vector<Particle> particles;
     std::vector<float> container_vertices;

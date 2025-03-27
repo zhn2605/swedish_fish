@@ -18,6 +18,9 @@ void Renderer::CreateContainer(float length, float width, float height) {
         container_line_indices.clear();
     }
 
+    container_min_bound = glm::vec3(-length/2, -height/2, -width/2);
+    container_max_bound = glm::vec3(length/2, height/2, width/2);
+
     // Create new vertices and indices for container
     container_vertices = {
         // Base coordinates
@@ -156,7 +159,7 @@ void Renderer::DrawParticles(Shader& shader) {
     }
 }
 
-void Renderer::UpdateParticles(Physics physics) {
+void Renderer::UpdateParticles(Physics& physics) {
     for (Particle& currParticle: particles) {
         physics.Update(currParticle);
     }

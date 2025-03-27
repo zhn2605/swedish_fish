@@ -39,6 +39,7 @@ int main(void) {
   renderer.AddParticle(particle);
   
   Physics physics(delta_time, gravity, surface_tension);
+  physics.SetBounds(renderer.container_min_bound, renderer.container_max_bound);
   renderer.UpdateParticles(physics);
 
   while (app.isActive()) {
