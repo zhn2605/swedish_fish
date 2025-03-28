@@ -77,11 +77,11 @@ void Particle::UpdateModelMatrix() {
 void Particle::UpdateColor() {
     float magnitude = sqrt(pow(velocity.x, 2) + pow(velocity.y, 2) + pow(velocity.z, 2));
 
-    glm::vec3 blue      = glm::vec3(0.2f, 0.4f, 1.0f);
-    glm::vec3 green     = glm::vec3(0.3686f, 1.0f, 0.321);
-    glm::vec3 yellow    = glm::vec3(1.0, 1.0, 0.4);
-    glm::vec3 orange    = glm::vec3(1.0f, 0.5f, 0.2f);
-    glm::vec3 red       = glm::vec3(1.0f, 0.3f, 0.3f);
+    glm::vec4 blue      = glm::vec4(0.2f, 0.4f, 1.0f, 1.0f);
+    glm::vec4 green     = glm::vec4(0.3686f, 1.0f, 0.321f, 1.0f);
+    glm::vec4 yellow    = glm::vec4(1.0f, 1.0f, 0.4f, 1.0f);
+    glm::vec4 orange    = glm::vec4(1.0f, 0.5f, 0.2f, 1.0f);
+    glm::vec4 red       = glm::vec4(1.0f, 0.3f, 0.3f, 1.0f);
 
     if (magnitude <= 3.0f) {
         color = blue;
@@ -114,4 +114,4 @@ std::vector<unsigned int> Particle::getIndices() { return indices; }
 glm::mat4 Particle::getModelMatrix() { return modelMatrix; }
 glm::vec3 Particle::getPosition() { return position; }
 glm::vec3 Particle::getVelocity() { return velocity; }
-glm::vec3 Particle::getColor() { return color; }
+glm::vec4 Particle::getColor() { return color; }

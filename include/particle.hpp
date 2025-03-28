@@ -27,7 +27,7 @@ public:
     glm::mat4 getModelMatrix();
     glm::vec3 getPosition();
     glm::vec3 getVelocity();
-    glm::vec3 getColor();
+    glm::vec4 getColor();
 
 private:
     // Particle properties
@@ -43,7 +43,7 @@ private:
     // Particle physics data 
     glm::vec3 position;
     glm::vec3 velocity;
-    glm::vec3 color;
+    glm::vec4 color;
     glm::mat4 modelMatrix;
 };
 

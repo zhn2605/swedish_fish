@@ -39,68 +39,21 @@ void Physics::Update(Particle& particle) {
 // Collision
 bool Physics::CheckContainerCollision(Particle& particle) {
     bool collision = false;
-    glm::vec3 particle_pos = particle.getPosition();
+    // take it one step at a time
+    glm::vec3 pos = particle.getPosition();
 
-    // x axis
-    if (particle_pos.x - particle.getRadius() < container_min.x) {
-        particle_pos.x = container_min.x + particle.getRadius();
-        collision = true;
-    } else if (particle_pos.x + particle.getRadius() > container_max.x) {
-        particle_pos.x = container_max.x + particle.getRadius();
+    if (pos.y - particle.getRadius() <= 0) {
+        printf("Particle: <%f, %f, %f>\n", pos.x, pos.y, pos.z);
+        particle.setPosition(glm::vec3(pos.x, 0 + particle.getRadius(), pos.z));
         collision = true;
     }
-
-    // y axis
-    if (particle_pos.y - particle.getRadius() < container_min.y) {
-        particle_pos.y = container_min.y + particle.getRadius();
-        collision = true;
-    } else if (particle_pos.y + particle.getRadius() > container_max.y) {
-        particle_pos.y = container_max.y + particle.getRadius();
-        collision = true;
-    }
-
-    // z axis
-    if (particle_pos.z - particle.getRadius() < container_min.z) {
-        particle_pos.z = container_min.z + particle.getRadius();
-        collision = true;
-    } else if (particle_pos.z + particle.getRadius() > container_max.z) {
-        particle_pos.z = container_max.z + particle.getRadius();
-        collision = true;
-    }
-
-    particle.setPosition(particle_pos);
+    
     return collision;
 }
 
 void Physics::ResolveContainerCollision(Particle& particle) {
     // Determine the collision axis and create a normal vector
-    glm::vec3 normal(0.0f);
-    glm::vec3 particle_pos = particle.getPosition();
-    
-    // x axis
-    if (particle_pos.x - particle.getRadius() <= container_min.x || 
-        particle_pos.x + particle.getRadius() >= container_max.x) {
-            printf("Hit x bount");
-            normal.x = (particle_pos.x > (container_min.x + container_max.x) / 2.0f) ? -1.0f : 1.0f;
-    }
-    // y collision
-    else if (particle_pos.y - particle.getRadius() <= container_min.y || 
-        particle_pos.y + particle.getRadius() >= container_max.y) {
-            printf("Hit y bound");
-            normal.y = (particle_pos.y > (container_min.y + container_max.y) / 2.0f) ? -1.0f : 1.0f;
-    }
-    // z collision
-    else if (particle_pos.z - particle.getRadius() <= container_min.z || 
-        particle_pos.z + particle.getRadius() >= container_max.z) {
-            printf("Hit z bound");
-            normal.z = (particle_pos.z > (container_min.z + container_max.z) / 2.0f) ? -1.0f : 1.0f;
-    }
-    
-    // reverse velocity in direction of colision
-    if (glm::length(normal) > 0) {
-        float normal_velocity_magnitude = glm::dot(particle.getVelocity(), normal);
-        particle.setVelocity(normal_velocity_magnitude * normal);
-    }
+    particle.setPosition(particle.getPosition() + glm::vec3(0.0f, 10.0f, 0.0f));
 }
 
 // Setters

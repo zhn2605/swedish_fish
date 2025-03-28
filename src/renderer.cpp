@@ -54,8 +54,8 @@ void Renderer::CreateContainer(float length, float width, float height) {
         0, 4, 7,  7, 3, 0,  
         // Right face
         1, 5, 6,  6, 2, 1,  
-        // Top face
-        3, 2, 6,  6, 7, 3,  
+        // // Top face
+        // 3, 2, 6,  6, 7, 3,  
         // Bottom face
         0, 1, 5,  5, 4, 0   
     };
@@ -82,7 +82,7 @@ void Renderer::DrawContainer(Shader& shader, glm::vec3 pos, glm::vec3 angle, glm
     model = glm::scale(model, scale);
     
     shader.setUniformMat4("model", model);  // Fix: use the actual model matrix
-    shader.setUniformVec3("color", glm::vec3(1.0f));
+    shader.setUniformVec4("color", glm::vec4(1.0f, 1.0f, 1.0f, 0.2f));
 
     // Bind VAO
     glGenVertexArrays(1, &VAO);
@@ -98,6 +98,8 @@ void Renderer::DrawContainer(Shader& shader, glm::vec3 pos, glm::vec3 angle, glm
     glEnableVertexAttribArray(0);
 
     if (toggle_frame) {
+        shader.setUniformVec4("color", glm::vec4(1.0f));
+
         // EBO - Send wireframe indices
         glGenBuffers(1, &EBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -106,7 +108,10 @@ void Renderer::DrawContainer(Shader& shader, glm::vec3 pos, glm::vec3 angle, glm
         // Draw wireframe
         glBindVertexArray(VAO);
         glDrawElements(GL_LINES, container_line_indices.size(), GL_UNSIGNED_INT, 0);
+       
     } else {
+        shader.setUniformVec4("color", glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
+
         // EBO - Send triangle indices
         glGenBuffers(1, &EBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -123,7 +128,7 @@ void Renderer::DrawContainer(Shader& shader, glm::vec3 pos, glm::vec3 angle, glm
 
 void Renderer::DrawParticle(Particle& particle, Shader& shader) {
     shader.setUniformMat4("model", particle.getModelMatrix());
-    shader.setUniformVec3("color", particle.getColor());
+    shader.setUniformVec4("color", particle.getColor());
 
     std::vector<float> vertices = particle.getVertices();
     std::vector<unsigned int> indices = particle.getIndices();
