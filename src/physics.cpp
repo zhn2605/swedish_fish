@@ -42,9 +42,9 @@ bool Physics::CheckContainerCollision(Particle& particle) {
     // take it one step at a time
     glm::vec3 pos = particle.getPosition();
 
-    if (pos.y - particle.getRadius() <= 0) {
-        printf("Particle: <%f, %f, %f>\n", pos.x, pos.y, pos.z);
-        particle.setPosition(glm::vec3(pos.x, 0 + particle.getRadius(), pos.z));
+    if (pos.y - particle.getRadius() <= container_min.y) {
+        printf("Particle: <%f, %f, %f>\tMin y: %f\n", pos.x, pos.y, pos.z, container_min.y);
+        particle.setPosition(glm::vec3(pos.x, container_min.y + particle.getRadius(), pos.z));
         collision = true;
     }
     
@@ -53,7 +53,11 @@ bool Physics::CheckContainerCollision(Particle& particle) {
 
 void Physics::ResolveContainerCollision(Particle& particle) {
     // Determine the collision axis and create a normal vector
-    particle.setPosition(particle.getPosition() + glm::vec3(0.0f, 10.0f, 0.0f));
+    if (glm::length(particle.getVelocity()) < 0.001) {
+        particle.setVelocity(glm::vec3(0.0f));
+    }
+
+    particle.setVelocity(-0.7f * particle.getVelocity());
 }
 
 // Setters
