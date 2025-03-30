@@ -32,6 +32,11 @@ void Camera::MouseLook(float mouseX, float mouseY) {
 
     // Horizontal
     lookDirection = glm::rotate(lookDirection, sensitivity * glm::radians(mouseDelta.x), upVector);
+
+    // Vertical
+    glm::vec3 rightVector = glm::normalize(glm::cross(lookDirection, upVector));
+    lookDirection = glm::rotate(lookDirection, sensitivity * glm::radians(mouseDelta.y), rightVector);
+    
     lookDirection = glm::normalize(lookDirection);
     oldMousePos = currentMouse;
 }
