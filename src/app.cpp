@@ -63,6 +63,9 @@ void App::Initialize() {
         exit(1);
     }
 
+    // Set mouse ot middle of screen
+    SDL_WarpMouseInWindow(window, screenHeight / 2, screenHeight / 2);
+
     // Set application to active
     active = true;
 }
@@ -78,17 +81,14 @@ void App::setActive(bool value) {
     active = value;
 }
 
+void App::setRelativeMode(bool value) {
+    SDL_SetWindowRelativeMouseMode(window, value);
+}
+
 // TODO: Move to input class 
 void App::update() {
     // std::cout << "HEY MAN!!";
     SDL_GL_SwapWindow(window);
-    SDL_Event e;
-    while (SDL_PollEvent(&e)) {
-        switch (e.type) {
-            case SDL_EVENT_QUIT:
-                exit(1);
-        }
-    }
 }
 
 void App::setWidth(int value) {

@@ -5,6 +5,8 @@
 #include <glm/glm.hpp>
 #include <particle.hpp>
 
+#define EPSILON 0.0000000001
+
 class Physics {
 public:
     Physics(float dt, float a, float surfTens);

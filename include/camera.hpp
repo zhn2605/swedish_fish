@@ -16,7 +16,7 @@ public:
     void UpdateViewMatrix();
     void UpdateMatrices();
 
-    void MouseLook(int mouseX, int mouseY);
+    void MouseLook(float mouseX, float mouseY);
 	void MoveForward(float speed);
 	void MoveBackward(float speed);
 	void MoveLeft(float speed);
@@ -30,6 +30,7 @@ public:
 	void SetEyePosition(glm::vec3 position);
 
 	float GetFovy();
+    float GetSpeed();
 	glm::vec3 GetEye();
 	glm::vec3 GetLookDir();
 	glm::mat4 GetProjectionMatrix() const;
@@ -48,6 +49,7 @@ private:
     float aspect;
     float near;
     float far;
+    float base_speed;
 
     glm::vec2 oldMousePos;
 };

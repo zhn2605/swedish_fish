@@ -176,6 +176,10 @@ void Renderer::SetFrameMode(bool value) {
 }
 
 void Renderer::CleanUp() {
+    container_indices.clear();
+    container_line_indices.clear();
+    particles.clear();
+
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);

@@ -16,7 +16,7 @@ public:
     void setActive(bool value);
     void setWidth(int value);
     void setHeight(int value);
-
+    void setRelativeMode(bool value);
     void update();
 
     // Getters

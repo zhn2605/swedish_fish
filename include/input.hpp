@@ -1,0 +1,21 @@
+#ifndef INPUT_HPP
+#define INPUT_HPP
+
+#include <iostream>
+#include <SDL.h>
+
+#include <app.hpp>
+#include <camera.hpp>
+#include <renderer.hpp>
+#include <physics.hpp>
+
+
+class Input {
+public:
+    static void PollEvents(App& app, Camera& camera, Renderer& renderer, Physics& physics, float dt);
+
+private:
+    static void HandleMovement(const bool* keystates, Camera& camera, float dt);
+};
+
+#endif

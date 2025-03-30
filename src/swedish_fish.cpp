@@ -2,6 +2,7 @@
 #include <chrono>
 
 #include <app.hpp>
+#include <input.hpp>
 #include <shader.hpp>
 #include <renderer.hpp>
 #include <particle.hpp>
@@ -22,6 +23,7 @@ int main(void) {
   // Initialization
   App app(640, 480, "applicationTest");
   app.Initialize();
+  app.setRelativeMode(true);
 
   Shader shader(vertexFilePath, fragmentFilePath);
 
@@ -50,7 +52,7 @@ int main(void) {
 
     physics.SetDeltaTime(delta_time);
 
-    app.update();
+    Input::PollEvents(app, camera, renderer, physics, delta_time);
 
     // Prepares gl buffers etc.
     renderer.PrepareDraw(shader);
@@ -63,6 +65,9 @@ int main(void) {
     // Draw
     renderer.DrawContainer(shader, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f));
     renderer.DrawParticles(shader);
+
+    // swap front & back buffers
+    app.update();
   }
 
   renderer.CleanUp();

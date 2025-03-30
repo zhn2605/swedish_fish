@@ -10,6 +10,7 @@ Camera::Camera(float sens) {
     aspect = 1.0f;
     near = 0.01f;
     far = 50.0f;
+    base_speed = 10.0f;
 
     UpdateMatrices();
 }
@@ -19,8 +20,8 @@ void Camera::UpdateMatrices() {
     viewMatrix = glm::lookAt(eye, eye + lookDirection, upVector);
 }
 
-void Camera::MouseLook(int mouseX, int mouseY) {
-    glm::vec2 currentMouse = glm::vec2((float) mouseX, (float)mouseY);
+void Camera::MouseLook(float mouseX, float mouseY) {
+    glm::vec2 currentMouse = glm::vec2(mouseX, mouseY);
     static bool firstLook = true;
     if (firstLook) {
         oldMousePos = currentMouse;
@@ -76,7 +77,7 @@ void Camera::SetEyePosition(glm::vec3 position) {
 
 // Getters
 float Camera::GetFovy() { return fovy; }
-
+float Camera::GetSpeed() { return base_speed; }
 glm::vec3 Camera::GetEye() { return eye; }
 glm::vec3 Camera::GetLookDir() { return lookDirection; }
 

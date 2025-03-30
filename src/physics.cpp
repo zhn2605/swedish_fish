@@ -53,11 +53,11 @@ bool Physics::CheckContainerCollision(Particle& particle) {
 
 void Physics::ResolveContainerCollision(Particle& particle) {
     // Determine the collision axis and create a normal vector
-    if (glm::length(particle.getVelocity()) < 0.001) {
+    if (glm::length(particle.getVelocity()) < EPSILON) {
         particle.setVelocity(glm::vec3(0.0f));
     }
 
-    particle.setVelocity(-0.7f * particle.getVelocity());
+    particle.setVelocity(-0.6f * particle.getVelocity());
 }
 
 // Setters
