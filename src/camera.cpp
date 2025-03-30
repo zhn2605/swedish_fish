@@ -84,7 +84,7 @@ void Camera::SetEyePosition(glm::vec3 position) {
 float Camera::GetFovy() { return fovy; }
 float Camera::GetSpeed() { return base_speed; }
 glm::vec3 Camera::GetEye() { return eye; }
-glm::vec3 Camera::GetLookDir() { return lookDirection; }
+glm::vec3 Camera::GetLookDir() { return glm::normalize(lookDirection); }
 
 glm::mat4 Camera::GetProjectionMatrix() const {
     return projectionMatrix;

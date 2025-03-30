@@ -16,6 +16,8 @@ void Input::PollEvents(App& app, Camera& camera, Renderer& renderer, Physics& ph
 
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
+        HandlePollAction(e, camera, renderer);
+        
         // Quit
         if (e.type == SDL_EVENT_QUIT) {
             app.setActive(false);
@@ -44,4 +46,21 @@ void Input::HandleMovement(const bool* keystates, Camera& camera, float dt) {
     if (keystates[SDL_SCANCODE_D]) { camera.MoveRight(speed); }
     if (keystates[SDL_SCANCODE_SPACE]) { camera.MoveUp(speed); }
     if (keystates[SDL_SCANCODE_LCTRL]) { camera.MoveDown(speed); }
+}
+
+void Input::HandlePollAction(SDL_Event& event, Camera& camera, Renderer& renderer) {
+    float force = 13.0f;
+    
+    if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
+        if (event.button.button == SDL_BUTTON_LEFT) {
+            Particle particle(0.2f, 36, 18);
+            particle.setPosition(camera.GetEye());
+            particle.setVelocity(camera.GetLookDir() * force);
+
+            glm::vec3 vel = particle.getVelocity();
+
+            printf("Velocity: <%f, %f, %f>\n", vel.x, vel.y, vel.z);
+            renderer.AddParticle(particle);
+        }
+    }
 }

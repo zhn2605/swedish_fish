@@ -11,11 +11,11 @@ void Physics::Update(Particle& particle) {
     glm::vec3 initial_pos = particle.getPosition();
     glm::vec3 initial_vel = particle.getVelocity();
 
-    glm::vec3 dv_vector = glm::vec3(0.0f);
+    glm::vec3 dv_vector = initial_vel;
 
     // Kinematics
     // Gravity / acceleration
-    dv_vector.y += initial_vel.y + accel * delta_time;
+    dv_vector.y += accel * delta_time;
 
     // Final vec changes
     particle.setVelocity(dv_vector);
@@ -39,17 +39,34 @@ void Physics::Update(Particle& particle) {
 // Collision
 bool Physics::CheckContainerCollision(Particle& particle) {
     bool collision = false;
-    // take it one step at a time
     glm::vec3 pos = particle.getPosition();
+    float radius = particle.getRadius();
 
-    if (pos.y - particle.getRadius() <= container_min.y) {
-        printf("Particle: <%f, %f, %f>\tMin y: %f\n", pos.x, pos.y, pos.z, container_min.y);
-        particle.setPosition(glm::vec3(pos.x, container_min.y + particle.getRadius(), pos.z));
+    // Clamp position and register collisions
+    if (pos.y - radius <= container_min.y) { // Bottom collision
+        particle.setPosition(glm::vec3(pos.x, container_min.y + radius, pos.z));
         collision = true;
     }
-    
+    if (pos.x - radius <= container_min.x) { // Left collision
+        particle.setPosition(glm::vec3(container_min.x + radius, pos.y, pos.z));
+        collision = true;
+    }
+    if (pos.x + radius >= container_max.x) { // Right collision
+        particle.setPosition(glm::vec3(container_max.x - radius, pos.y, pos.z));
+        collision = true;
+    }
+    if (pos.z - radius <= container_min.z) { // Front collision
+        particle.setPosition(glm::vec3(pos.x, pos.y, container_min.z + radius));
+        collision = true;
+    }
+    if (pos.z + radius >= container_max.z) { // Back collision
+        particle.setPosition(glm::vec3(pos.x, pos.y, container_max.z - radius));
+        collision = true;
+    }
+
     return collision;
 }
+
 
 void Physics::ResolveContainerCollision(Particle& particle) {
     // Determine the collision axis and create a normal vector

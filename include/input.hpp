@@ -8,6 +8,7 @@
 #include <camera.hpp>
 #include <renderer.hpp>
 #include <physics.hpp>
+#include <particle.hpp>
 
 
 class Input {
@@ -16,6 +17,7 @@ public:
 
 private:
     static void HandleMovement(const bool* keystates, Camera& camera, float dt);
+    static void HandlePollAction(SDL_Event& event, Camera& camera, Renderer& renderer);
 };
 
 #endif
