@@ -22,7 +22,9 @@ public:
     void UpdateCamera(Shader& shader, Camera& camera);
     void UpdateParticles(Physics& physics);
 
-    void DrawContainer(Shader& shader, glm::vec3 pos, glm::vec3 angle, glm::vec3 scale);
+    void InitializeParticleMesh(Particle& sample_particle);
+
+    void DrawContainer(Shader& shader);
     void DrawParticle(Particle& particle, Shader& shader);
     void DrawParticles(Shader& shader);
     
@@ -34,16 +36,25 @@ public:
     glm::vec3 container_min_bound;
     glm::vec3 container_max_bound;
 private:
+    void InitializeContainerMesh();
+
     std::vector<Particle> particles;
+    std::vector<float> particle_vertices;
+    std::vector<unsigned int> particle_indices;
+
     std::vector<float> container_vertices;
     std::vector<unsigned int> container_indices;
     std::vector<unsigned int> container_line_indices;
 
     bool toggle_frame = false;
 
-    unsigned int EBO;
-    unsigned int VBO;
-    unsigned int VAO;
+    unsigned int particle_EBO;
+    unsigned int particle_VBO;
+    unsigned int particle_VAO;
+
+    unsigned int container_EBO;
+    unsigned int container_VBO;
+    unsigned int container_VAO;
 };
 
 #endif

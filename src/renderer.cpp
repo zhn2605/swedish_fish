@@ -59,6 +59,8 @@ void Renderer::CreateContainer(float length, float width, float height) {
         // Bottom face
         0, 1, 5,  5, 4, 0   
     };
+
+    InitializeContainerMesh();
 }
 
 void Renderer::UpdateCamera(Shader& shader, Camera& camera) {
@@ -70,103 +72,108 @@ void Renderer::AddParticle(Particle& particle) {
     particles.push_back(particle);
 }
 
-void Renderer::DrawContainer(Shader& shader, glm::vec3 pos, glm::vec3 angle, glm::vec3 scale) {
-    // Initialize the transformation matrix
-    glm::mat4 model = glm::mat4(1.0f);
-    
-    // Apply transformations
-    model = glm::translate(model, pos);
-    model = glm::rotate(model, glm::radians(angle.x), glm::vec3(1.0f, 0.0f, 0.0f)); // X rotation
-    model = glm::rotate(model, glm::radians(angle.y), glm::vec3(0.0f, 1.0f, 0.0f)); // Y rotation
-    model = glm::rotate(model, glm::radians(angle.z), glm::vec3(0.0f, 0.0f, 1.0f)); // Z rotation
-    model = glm::scale(model, scale);
-    
-    shader.setUniformMat4("model", model);  // Fix: use the actual model matrix
-    shader.setUniformVec4("color", glm::vec4(1.0f, 1.0f, 1.0f, 0.2f));
+void Renderer::InitializeContainerMesh() {
+    // Generate VAO
+    glGenVertexArrays(1, &container_VAO);
+    glBindVertexArray(container_VAO);
 
-    // Bind VAO
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-
-    // VBO - Send vertex data
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // Generate VBOs
+    glGenBuffers(1, &container_VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, container_VBO);
     glBufferData(GL_ARRAY_BUFFER, container_vertices.size() * sizeof(float), container_vertices.data(), GL_STATIC_DRAW);
 
     // Vertex Attribute Pointer
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
+    // EBO
+    glGenBuffers(1, &container_EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, container_EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, container_line_indices.size() * sizeof(unsigned int), container_line_indices.data(), GL_STATIC_DRAW);
+
+    // Unbind VAO
+    glBindVertexArray(0);
+}
+
+void Renderer::DrawContainer(Shader& shader) {
+    // Initialize the transformation matrix
+    glm::mat4 model = glm::mat4(1.0f);
+    
+    shader.setUniformMat4("model", model);  // Fix: use the actual model matrix
+    shader.setUniformVec4("color", glm::vec4(1.0f, 1.0f, 1.0f, 0.2f));
+
+    // Bind VAO
+    glBindVertexArray(container_VAO);
+
     if (toggle_frame) {
         shader.setUniformVec4("color", glm::vec4(1.0f));
 
         // EBO - Send wireframe indices
-        glGenBuffers(1, &EBO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, container_EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, container_line_indices.size() * sizeof(unsigned int), container_line_indices.data(), GL_STATIC_DRAW);
-    
-        // Draw wireframe
-        glBindVertexArray(VAO);
         glDrawElements(GL_LINES, container_line_indices.size(), GL_UNSIGNED_INT, 0);
        
     } else {
         shader.setUniformVec4("color", glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
 
         // EBO - Send triangle indices
-        glGenBuffers(1, &EBO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, container_EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, container_indices.size() * sizeof(unsigned int), container_indices.data(), GL_STATIC_DRAW);
-
-        // Draw solid container
-        glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, container_indices.size(), GL_UNSIGNED_INT, 0);
     }
 
-    // Cleanup
+    // Unbind VAO
     glBindVertexArray(0);
 }
 
 /* 
 TODO: 
-  - Optimize to be able to initialize once and only update subbuffer data
   - Instancing
 */
-void Renderer::DrawParticle(Particle& particle, Shader& shader) {
-    shader.setUniformMat4("model", particle.getModelMatrix());
-    shader.setUniformVec4("color", particle.getColor());
-
-    std::vector<float> vertices = particle.getVertices();
-    std::vector<unsigned int> indices = particle.getIndices();
+void Renderer::InitializeParticleMesh(Particle& sample_particle) {
+    // Particle particle(0.1, 36, 18);
+    particle_vertices = sample_particle.getVertices();
+    particle_indices = sample_particle.getIndices();
 
     // Bind VAO
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
+    glGenVertexArrays(1, &particle_VAO);
+    glBindVertexArray(particle_VAO);
 
     // VBO
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
+    glGenBuffers(1, &particle_VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, particle_VBO);
+    glBufferData(GL_ARRAY_BUFFER, particle_vertices.size() * sizeof(float), particle_vertices.data(), GL_DYNAMIC_DRAW);
 
     // Set Up EBO
-    glGenBuffers(1, &EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_DYNAMIC_DRAW);
+    glGenBuffers(1, &particle_EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, particle_EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, particle_indices.size() * sizeof(unsigned int), particle_indices.data(), GL_DYNAMIC_DRAW);
 
     // TODO: make stride of 3 a variable that changes accordingly with future additions of normal/tex/binorm
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // glDrawElements(GL_TRIANGLES, particle_indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
-
-    // Draw
-    glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }
 
 void Renderer::DrawParticles(Shader& shader) {
+    glBindVertexArray(particle_VAO);
+    
     for (Particle& currParticle : particles) {
-        DrawParticle(currParticle, shader);
+        shader.setUniformMat4("model", currParticle.getModelMatrix());
+        shader.setUniformVec4("color", currParticle.getColor());
+
+        int boundVao = 0, boundEbo = 0;
+        glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &boundVao);
+        glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING, &boundEbo);
+
+        std::cout << "Bound VAO: " << boundVao << ", Bound EBO: " << boundEbo << std::endl;
+
+        glDrawElements(GL_TRIANGLES, particle_indices.size(), GL_UNSIGNED_INT, 0);
     }
+
+    glBindVertexArray(0);
 }
 
 void Renderer::UpdateParticles(Physics& physics) {
@@ -185,7 +192,11 @@ void Renderer::CleanUp() {
     container_line_indices.clear();
     particles.clear();
 
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
+    glDeleteVertexArrays(1, &particle_VAO);
+    glDeleteBuffers(1, &particle_VBO);
+    glDeleteBuffers(1, &particle_EBO);
+
+    glDeleteVertexArrays(1, &container_VAO);
+    glDeleteBuffers(1, &container_VBO);
+    glDeleteBuffers(1, &container_EBO);
 }

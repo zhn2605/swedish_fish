@@ -36,9 +36,10 @@ int main(void) {
   renderer.CreateContainer(5.0f, 5.0f, 5.0f);
   renderer.SetFrameMode(true);
 
-  Particle particle(0.2f, 36, 18);
-  particle.setPosition(glm::vec3(0.0f, 5.0f, 0.0f));
-  renderer.AddParticle(particle);
+  Particle sample_particle(0.2f, 36, 18);
+  sample_particle.setPosition(glm::vec3(0.0f, 5.0f, 0.0f));
+  renderer.InitializeParticleMesh(sample_particle);
+  renderer.AddParticle(sample_particle);
   
   Physics physics(delta_time, gravity, surface_tension);
   physics.SetBounds(renderer.container_min_bound, renderer.container_max_bound);
@@ -63,7 +64,7 @@ int main(void) {
     renderer.UpdateParticles(physics);
 
     // Draw
-    renderer.DrawContainer(shader, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f));
+    renderer.DrawContainer(shader);
     renderer.DrawParticles(shader);
 
     // swap front & back buffers
