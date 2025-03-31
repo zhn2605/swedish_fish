@@ -22,7 +22,9 @@ public:
     void UpdateCamera(Shader& shader, Camera& camera);
     void UpdateParticles(Physics& physics);
 
+    void SetDefaultParticle(Particle& particle);
     void InitializeParticleMesh(Particle& sample_particle);
+    void SpawnParticleGrid(int count, float spacing);
 
     void DrawContainer(Shader& shader);
     void DrawParticle(Particle& particle, Shader& shader);
@@ -35,13 +37,14 @@ public:
     // Getters
     unsigned int GetParticleCount();
     bool IsConstantFlow();
+    Particle GetDefaultParticle();
     
     void CleanUp();
 
     glm::vec3 container_min_bound;
     glm::vec3 container_max_bound;
 private:
-
+    Particle default_particle;
     void InitializeContainerMesh();
 
     std::vector<Particle> particles;

@@ -8,7 +8,7 @@
 
 class Particle{
 public:
-    Particle(float r, int sect, int stack);
+    Particle(float r, float m, int sect, int stack, float smoothing_r);
     void Initialize();
     void UpdateModelMatrix();
     void UpdateColor();
@@ -19,11 +19,14 @@ public:
     void setStackCount(int stack);
     void setPosition(glm::vec3 vec);
     void setVelocity(glm::vec3 vec);
+    void setMass(float m);
 
     // Getters
     float getRadius();
+    float getMass();
     std::vector<float> getVertices();
     std::vector<unsigned int> getIndices();
+    float getSmoothingRadius();
     glm::mat4 getModelMatrix();
     glm::vec3 getPosition();
     glm::vec3 getVelocity();
@@ -32,9 +35,11 @@ public:
 private:
     // Particle properties
     float radius;
+    float mass;
     int sectorCount, stackCount;
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
+    float smoothing_radius;
     
     // Particle initialization functions
     void GenerateVertices();

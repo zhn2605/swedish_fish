@@ -15,6 +15,8 @@ std::string fragmentFilePath = "./include/shader/frag.glsl";
 float delta_time = 0.0f;
 float gravity = -9.81f;
 float surface_tension = 72.0f;
+float target_density = 1.0f;
+float pressure_multiplier = 5.0f;
 
 int main(void) {
   // Time
@@ -36,12 +38,14 @@ int main(void) {
   renderer.CreateContainer(20.0f, 6.0f, 10.0f);
   renderer.SetFrameMode(true);
 
-  Particle sample_particle(0.2f, 36, 18);
+  // Create sample particle
+  Particle sample_particle(0.2f, 0.2f, 36, 18, 1.0f);
   sample_particle.setPosition(glm::vec3(0.0f, 5.0f, 0.0f));
-  renderer.InitializeParticleMesh(sample_particle);
+  renderer.SetDefaultParticle(sample_particle);
   renderer.AddParticle(sample_particle);
   
-  Physics physics(delta_time, gravity, surface_tension);
+  // Physics
+  Physics physics(delta_time, gravity, surface_tension, target_density, pressure_multiplier);
   physics.SetBounds(renderer.container_min_bound, renderer.container_max_bound);
   renderer.UpdateParticles(physics);
 

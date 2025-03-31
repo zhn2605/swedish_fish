@@ -1,6 +1,6 @@
 #include <renderer.hpp>
 
-Renderer::Renderer() {}
+Renderer::Renderer() : default_particle(0.2f, 1.0f, 38, 16, 1.0f) {}
 
 void Renderer::PrepareDraw(Shader& shader) {
     glEnable(GL_DEPTH_TEST);
@@ -130,6 +130,11 @@ void Renderer::DrawContainer(Shader& shader) {
 TODO: 
   - Instancing
 */
+void Renderer::SetDefaultParticle(Particle& particle) {
+    default_particle = particle;
+    InitializeParticleMesh(particle);
+}
+
 void Renderer::InitializeParticleMesh(Particle& sample_particle) {
     // Particle particle(0.1, 36, 18);
     particle_vertices = sample_particle.getVertices();
@@ -171,9 +176,11 @@ void Renderer::DrawParticles(Shader& shader) {
 }
 
 void Renderer::UpdateParticles(Physics& physics) {
-    for (Particle& currParticle: particles) {
-        physics.Update(currParticle);
-    }
+    // for (Particle& currParticle: particles) {
+    //     physics.UpdateParticle(currParticle);
+    // }
+
+    physics.UpdateSystem(particles);
 }
 
 // Setters
@@ -186,13 +193,9 @@ void Renderer::SetConstantFlow(bool value) {
 }
 
 // Getters
-unsigned int Renderer::GetParticleCount() {
-    return particles.size();
-}
-
-bool Renderer::IsConstantFlow() {
-    return constant_flow;
-}
+unsigned int Renderer::GetParticleCount() { return particles.size(); }
+bool Renderer::IsConstantFlow() { return constant_flow; }
+Particle Renderer::GetDefaultParticle() { return default_particle; }
 
 void Renderer::CleanUp() {
     container_indices.clear();

@@ -4,10 +4,12 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/rotate_vector.hpp>
 
-Particle::Particle(float r, int sect, int stack) : position(0.0f, 0.0f, 0.0f), modelMatrix(1.0f) {
+Particle::Particle(float r, float m, int sect, int stack, float smoothing_r=1) : position(0.0f, 0.0f, 0.0f), modelMatrix(1.0f) {
     radius = r;
+    mass = m;
     sectorCount = sect;
     stackCount = stack;
+    smoothing_radius = smoothing_r;
 
     position = glm::vec3(0.0f, 0.0f, 0.0f);
     modelMatrix = glm::mat4(1.0f);
@@ -109,8 +111,10 @@ void Particle::setVelocity(glm::vec3 vec) { velocity = vec; }
 
 // Getters
 float Particle::getRadius() { return radius; }
+float Particle::getMass() { return mass; }
 std::vector<float> Particle::getVertices() { return vertices; }
 std::vector<unsigned int> Particle::getIndices() { return indices; }
+float Particle::getSmoothingRadius() { return smoothing_radius; }
 glm::mat4 Particle::getModelMatrix() { return modelMatrix; }
 glm::vec3 Particle::getPosition() { return position; }
 glm::vec3 Particle::getVelocity() { return velocity; }

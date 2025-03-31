@@ -67,7 +67,7 @@ void Input::HandlePollAction(SDL_Event& event, Camera& camera, Renderer& rendere
 void Input::SpawnParticle(Camera& camera, Renderer& renderer) {
     float force = 13.0f;
 
-    Particle particle(0.2f, 36, 18);
+    Particle particle = renderer.GetDefaultParticle();
     particle.setPosition(camera.GetEye());
     particle.setVelocity(camera.GetLookDir() * force);
 

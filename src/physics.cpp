@@ -1,43 +1,20 @@
 #include <physics.hpp>
 
-Physics::Physics(float dt=0.1f, float a=-9.81f, float surfTens=72.0f) 
+Physics::Physics(float dt=0.1f, float a=-9.81f, float surfTens=72.0f, float tg_density=1.0f, float pm=1.0f) 
 {
     delta_time = dt;
     accel = a;
     surface_tension = surfTens;
+
+    target_density = tg_density;
+    pressure_multiplier = pm;
 }
 
-void Physics::Update(Particle& particle) {
-    glm::vec3 initial_pos = particle.getPosition();
-    glm::vec3 initial_vel = particle.getVelocity();
-
-    glm::vec3 dv_vector = initial_vel;
-
-    // Gravity / acceleration
-    dv_vector.y += accel * delta_time;
-
-
-    
-    // Final vec changes
-    particle.setVelocity(dv_vector);
-
-    glm::vec3 final_pos = initial_pos + (dv_vector * delta_time);
-    particle.setPosition(final_pos);
-
-    // Collision
-    if (CheckContainerCollision(particle)) {
-        ResolveContainerCollision(particle);
-    }
-
-    // Apply necessary updates within particle
-    particle.UpdateModelMatrix();
-    particle.UpdateColor();
-
-    // Debug
-    // printf("Particle y value: %f\n", particle.getPosition().y);
-}
-
-// Collision
+/*
+===============================================================================================
+Collision
+===============================================================================================
+*/ 
 bool Physics::CheckContainerCollision(Particle& particle) {
     bool collision = false;
     glm::vec3 pos = particle.getPosition();
@@ -108,6 +85,118 @@ void Physics::ResolveContainerCollision(Particle& particle) {
     // Epislon to remove arbitraty small velocity
     if (glm::length(particle.getVelocity()) < EPSILON) {
         particle.setVelocity(glm::vec3(0.0f));
+    }
+}
+
+/* 
+===============================================================================================
+Fluid Calculations
+===============================================================================================
+*/
+
+float SmoothingKernel(float r, float dst) {
+    // directly from Sebastion Lague thank u good sir
+    float volume = M_PI * std::pow(r, 8) / 4;
+    float value = std::max((float)0, r * r - dst * dst);
+    return std::pow(value, 3) / volume;
+}
+
+float Physics::CalculateDensity(Particle& particle, std::vector<Particle>& particles) {
+    float density = 0.0f;
+
+    for (Particle& other : particles) {
+        glm::vec3 distance_vec = particle.getPosition() - other.getPosition();
+        float distance = glm::length(distance_vec);
+
+        if (distance < particle.getSmoothingRadius()) {
+            float influence = SmoothingKernel(particle.getSmoothingRadius(), distance);
+            density += other.getMass() * influence;
+        }
+    }
+
+    return density;
+}
+
+std::vector<float> Physics::CalculateAllDensities(std::vector<Particle>& particles) {
+    std::vector<float> densities(particles.size(), 0.0f);
+        
+        for (size_t i = 0; i < particles.size(); i++) {
+            densities[i] = CalculateDensity(particles[i], particles);
+        }
+        
+    return densities;
+}
+
+glm::vec3 Physics::CalculatePressureForce(Particle& particle, std::vector<Particle>& particles, std::vector<float>& densities, size_t particle_index) {
+    glm::vec3 pressure_force(0.0f);
+
+    float particle_density = densities[particle_index];
+    float pressure = pressure_multiplier * (particle_density - target_density);
+    
+    for (size_t i = 0; i < particles.size(); i++) {
+        if (i == particle_index) continue;
+            
+        Particle& other = particles[i];
+        glm::vec3 distance_vec = particle.getPosition() - other.getPosition();
+        float distance = glm::length(distance_vec);
+            
+        if (distance < particle.getSmoothingRadius() && distance > 0.0001f) {
+            // Use pre-calculated density for the neighbor
+            float other_density = densities[i];
+            float other_pressure = pressure_multiplier * (other_density - target_density);
+            
+            float kernel = SmoothingKernel(particle.getSmoothingRadius(), distance);
+            glm::vec3 direction = glm::normalize(distance_vec);
+        
+            // Negate (originally +=) to repel
+            pressure_force -= direction * ((pressure + other_pressure) / 2.0f) * kernel;
+        }
+    }    
+    return pressure_force;
+}
+
+// Updates
+void Physics::UpdateParticle(Particle& particle, const glm::vec3& pressure_force) {
+    glm::vec3 initial_pos = particle.getPosition();
+    glm::vec3 initial_vel = particle.getVelocity();
+
+    glm::vec3 dv_vector = initial_vel;
+
+    // Gravity / acceleration
+    dv_vector.y += accel * delta_time;
+
+    // Fluid forces
+    float mass_inverse = 1.0f / particle.getMass();
+    dv_vector += pressure_force * mass_inverse * delta_time;
+
+    // Final vec changes
+    particle.setVelocity(dv_vector);
+
+    glm::vec3 final_pos = initial_pos + (dv_vector * delta_time);
+    particle.setPosition(final_pos);
+
+    // Collision
+    if (CheckContainerCollision(particle)) {
+        ResolveContainerCollision(particle);
+    }
+
+    // Apply necessary updates within particle
+    particle.UpdateModelMatrix();
+    particle.UpdateColor();
+}
+
+void Physics::UpdateSystem(std::vector<Particle>& particles) {
+    // Precalculate all densities
+    std::vector<float> densities = CalculateAllDensities(particles);
+
+    for (size_t i = 0; i < particles.size(); i++) {
+        Particle& particle = particles[i];
+
+        // Get cached density
+        float density = densities[i];
+        glm::vec3 pressure_force = CalculatePressureForce(particle, particles, densities, i);
+
+        UpdateParticle(particle, pressure_force);
     }
 }
 
