@@ -16,6 +16,7 @@ public:
     static void PollEvents(App& app, Camera& camera, Renderer& renderer, Physics& physics, float dt);
 
 private:
+    static void SpawnParticle(Camera& camera, Renderer& renderer);
     static void HandleMovement(const bool* keystates, Camera& camera, float dt);
     static void HandlePollAction(SDL_Event& event, Camera& camera, Renderer& renderer);
 };

@@ -14,6 +14,10 @@ void Input::PollEvents(App& app, Camera& camera, Renderer& renderer, Physics& ph
     // Check for keys
     HandleMovement(keystates, camera, dt);
 
+    if (renderer.IsConstantFlow()) {
+        SpawnParticle(camera, renderer);
+    }
+
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
         HandlePollAction(e, camera, renderer);
@@ -49,19 +53,27 @@ void Input::HandleMovement(const bool* keystates, Camera& camera, float dt) {
 }
 
 void Input::HandlePollAction(SDL_Event& event, Camera& camera, Renderer& renderer) {
-    float force = 13.0f;
-    
     if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
         if (event.button.button == SDL_BUTTON_LEFT) {
-            Particle particle(0.2f, 36, 18);
-            particle.setPosition(camera.GetEye());
-            particle.setVelocity(camera.GetLookDir() * force);
+            SpawnParticle(camera, renderer);
+        }
 
-            glm::vec3 vel = particle.getVelocity();
-
-            // printf("Velocity: <%f, %f, %f>\n", vel.x, vel.y, vel.z);
-            renderer.AddParticle(particle);
-            printf("Particle count: %u\n", renderer.GetParticleCount());
+        if (event.button.button == SDL_BUTTON_RIGHT) {
+            renderer.SetConstantFlow(!renderer.IsConstantFlow());
         }
     }
+}
+
+void Input::SpawnParticle(Camera& camera, Renderer& renderer) {
+    float force = 13.0f;
+
+    Particle particle(0.2f, 36, 18);
+    particle.setPosition(camera.GetEye());
+    particle.setVelocity(camera.GetLookDir() * force);
+
+    glm::vec3 vel = particle.getVelocity();
+
+    // printf("Velocity: <%f, %f, %f>\n", vel.x, vel.y, vel.z);
+    renderer.AddParticle(particle);
+    printf("Particle count: %u\n", renderer.GetParticleCount());
 }

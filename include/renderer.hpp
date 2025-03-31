@@ -30,15 +30,18 @@ public:
     
     // Setters
     void SetFrameMode(bool value);
+    void SetConstantFlow(bool value);
     
     // Getters
     unsigned int GetParticleCount();
+    bool IsConstantFlow();
     
     void CleanUp();
 
     glm::vec3 container_min_bound;
     glm::vec3 container_max_bound;
 private:
+
     void InitializeContainerMesh();
 
     std::vector<Particle> particles;
@@ -50,6 +53,7 @@ private:
     std::vector<unsigned int> container_line_indices;
 
     bool toggle_frame = false;
+    bool constant_flow = false;
 
     unsigned int particle_EBO;
     unsigned int particle_VBO;

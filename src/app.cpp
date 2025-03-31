@@ -65,6 +65,7 @@ void App::Initialize() {
 
     // Set application to active
     active = true;
+    SDL_WarpMouseInWindow(window, screenHeight / 2, screenHeight / 2);
 }
 
 void App::Terminate() {
@@ -82,10 +83,9 @@ void App::setRelativeMode(bool value) {
     SDL_SetWindowRelativeMouseMode(window, value);
 }
 
-// TODO: Move to input class 
 void App::update() {
     // Set mouse ot middle of screen
-    SDL_WarpMouseInWindow(window, screenHeight / 2, screenHeight / 2);
+    // SDL_WarpMouseInWindow(window, screenHeight / 2, screenHeight / 2);
     SDL_GL_SwapWindow(window);
 }
 

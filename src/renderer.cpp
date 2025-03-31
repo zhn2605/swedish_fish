@@ -181,9 +181,17 @@ void Renderer::SetFrameMode(bool value) {
     toggle_frame = value;
 }
 
+void Renderer::SetConstantFlow(bool value) {
+    constant_flow = value;
+}
+
 // Getters
 unsigned int Renderer::GetParticleCount() {
     return particles.size();
+}
+
+bool Renderer::IsConstantFlow() {
+    return constant_flow;
 }
 
 void Renderer::CleanUp() {
