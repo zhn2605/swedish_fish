@@ -13,10 +13,11 @@ void Physics::Update(Particle& particle) {
 
     glm::vec3 dv_vector = initial_vel;
 
-    // Kinematics
     // Gravity / acceleration
     dv_vector.y += accel * delta_time;
 
+
+    
     // Final vec changes
     particle.setVelocity(dv_vector);
 
@@ -67,15 +68,49 @@ bool Physics::CheckContainerCollision(Particle& particle) {
     return collision;
 }
 
-
 void Physics::ResolveContainerCollision(Particle& particle) {
-    // Determine the collision axis and create a normal vector
+    glm::vec3 pos = particle.getPosition();
+    glm::vec3 vel = particle.getVelocity();
+    float radius = particle.getRadius();
+    float restitution = 0.6f; // Higher = bouncier
+    
+    // Bottom collision
+    if (pos.y - radius <= container_min.y + EPSILON) {
+        if (vel.y < 0) {
+            particle.setVelocity(glm::vec3(vel.x, -restitution * vel.y, vel.z));
+        }
+    }
+    // Left collision
+    if (pos.x - radius <= container_min.x + EPSILON) {
+        if (vel.x < 0) {
+            particle.setVelocity(glm::vec3(-restitution * vel.x, vel.y, vel.z));
+        }
+    }
+    // Right collision
+    if (pos.x + radius >= container_max.x - EPSILON) {
+        if (-vel.x < 0) {
+            particle.setVelocity(glm::vec3(-restitution * vel.x, vel.y, vel.z));
+        }
+    }
+    // Front collision
+    if (pos.z - radius <= container_min.z + EPSILON) {
+        if (vel.z < 0) {
+            particle.setVelocity(glm::vec3(vel.x, vel.y, -restitution * vel.z));
+        }
+    }
+    // Back collision
+    if (pos.z + radius >= container_max.z - EPSILON) {
+        if (-vel.z < 0) {
+            particle.setVelocity(glm::vec3(vel.x, vel.y, -restitution * vel.z));
+        }
+    }
+    
+    // Epislon to remove arbitraty small velocity
     if (glm::length(particle.getVelocity()) < EPSILON) {
         particle.setVelocity(glm::vec3(0.0f));
     }
-
-    particle.setVelocity(-0.6f * particle.getVelocity());
 }
+
 
 // Setters
 void Physics::SetBounds(glm::vec3& min, glm::vec3& max) {

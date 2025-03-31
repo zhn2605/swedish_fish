@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 #include <particle.hpp>
 
-#define EPSILON 0.0000000001
+#define EPSILON 0.00000001
 
 class Physics {
 public:

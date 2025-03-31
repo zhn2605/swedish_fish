@@ -59,7 +59,7 @@ void Input::HandlePollAction(SDL_Event& event, Camera& camera, Renderer& rendere
 
             glm::vec3 vel = particle.getVelocity();
 
-            printf("Velocity: <%f, %f, %f>\n", vel.x, vel.y, vel.z);
+            // printf("Velocity: <%f, %f, %f>\n", vel.x, vel.y, vel.z);
             renderer.AddParticle(particle);
         }
     }

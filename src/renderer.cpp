@@ -126,6 +126,11 @@ void Renderer::DrawContainer(Shader& shader, glm::vec3 pos, glm::vec3 angle, glm
     glBindVertexArray(0);
 }
 
+/* 
+TODO: 
+  - Optimize to be able to initialize once and only update subbuffer data
+  - Instancing
+*/
 void Renderer::DrawParticle(Particle& particle, Shader& shader) {
     shader.setUniformMat4("model", particle.getModelMatrix());
     shader.setUniformVec4("color", particle.getColor());
