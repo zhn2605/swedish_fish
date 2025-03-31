@@ -33,7 +33,7 @@ int main(void) {
 
   // Rendering
   Renderer renderer;
-  renderer.CreateContainer(5.0f, 5.0f, 5.0f);
+  renderer.CreateContainer(20.0f, 6.0f, 10.0f);
   renderer.SetFrameMode(true);
 
   Particle sample_particle(0.2f, 36, 18);

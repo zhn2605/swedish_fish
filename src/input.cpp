@@ -61,6 +61,7 @@ void Input::HandlePollAction(SDL_Event& event, Camera& camera, Renderer& rendere
 
             // printf("Velocity: <%f, %f, %f>\n", vel.x, vel.y, vel.z);
             renderer.AddParticle(particle);
+            printf("Particle count: %u\n", renderer.GetParticleCount());
         }
     }
 }

@@ -164,12 +164,6 @@ void Renderer::DrawParticles(Shader& shader) {
         shader.setUniformMat4("model", currParticle.getModelMatrix());
         shader.setUniformVec4("color", currParticle.getColor());
 
-        int boundVao = 0, boundEbo = 0;
-        glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &boundVao);
-        glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING, &boundEbo);
-
-        std::cout << "Bound VAO: " << boundVao << ", Bound EBO: " << boundEbo << std::endl;
-
         glDrawElements(GL_TRIANGLES, particle_indices.size(), GL_UNSIGNED_INT, 0);
     }
 
@@ -185,6 +179,11 @@ void Renderer::UpdateParticles(Physics& physics) {
 // Setters
 void Renderer::SetFrameMode(bool value) {
     toggle_frame = value;
+}
+
+// Getters
+unsigned int Renderer::GetParticleCount() {
+    return particles.size();
 }
 
 void Renderer::CleanUp() {

@@ -31,6 +31,9 @@ public:
     // Setters
     void SetFrameMode(bool value);
     
+    // Getters
+    unsigned int GetParticleCount();
+    
     void CleanUp();
 
     glm::vec3 container_min_bound;
