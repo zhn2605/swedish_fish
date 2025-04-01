@@ -98,9 +98,16 @@ Fluid Calculations
 
 float SmoothingKernel(float r, float dst) {
     // directly from Sebastion Lague thank u good sir
-    float volume = M_PI * std::pow(r, 8) / 4;
+    float volume = 64 * M_PI * std::pow(r, 9) / 315;
     float value = std::max((float)0, r * r - dst * dst);
     return std::pow(value, 3) / volume;
+}
+
+float SmoothingKernelDerivative(float r, float dst) {
+    if (dst >= r) { return 0; }
+    float f = r * r - dst * dst;
+    float scale = -24 / (M_PI * std::pow(r, 8));
+    return scale * dst * f * f;
 }
 
 float Physics::CalculateDensity(Particle& particle, std::vector<Particle>& particles) {
@@ -153,7 +160,6 @@ glm::vec3 Physics::CalculatePressureForce(Particle& particle, std::vector<Partic
             glm::vec3 direction = glm::normalize(glm::vec3(rand_x, rand_y, rand_z));
         }
 
-        // TODO: Implement newton's third law of motion
         if (distance < particle.getSmoothingRadius()) {
             // Use pre-calculated density for the neighbor
             float other_density = densities[i];
@@ -167,6 +173,26 @@ glm::vec3 Physics::CalculatePressureForce(Particle& particle, std::vector<Partic
         }
     }    
     return pressure_force;
+}
+
+// Near Wall hanedling
+bool Physics::IsNearWall(Particle& particle) {
+    bool near_wall = false;
+    glm::vec3 pos = particle.getPosition();
+    float threshold = particle.getSmoothingRadius() / 2;
+    float radius = particle.getRadius();
+
+    if (pos.x - radius <= container_min.x + threshold || pos.x + radius >= container_max.x - threshold ) {
+        printf("close to x bounds");
+        near_wall = true;
+    }
+
+    if (pos.z - radius <= container_min.z+ threshold || pos.z + radius >= container_max.z - threshold ) {
+        printf("close to z bounds");
+        near_wall = true;
+    }
+
+    return near_wall;
 }
 
 // Updates
@@ -200,13 +226,14 @@ void Physics::UpdateParticle(Particle& particle, const glm::vec3& pressure_force
     }
     // Final pos
     particle.setPosition(final_pos);
+    IsNearWall(particle);
 
     // Apply necessary updates within particle
     particle.UpdateModelMatrix();
     particle.UpdateColor();
 
     // debug
-    printf("pos: <%f, %f, %f>\tvel: <%f, %f, %f>\n", final_pos.x, final_pos.y, final_pos.z, dv_vector.x, dv_vector.y, dv_vector.z);
+    // printf("pos: <%f, %f, %f>\tvel: <%f, %f, %f>\n", final_pos.x, final_pos.y, final_pos.z, dv_vector.x, dv_vector.y, dv_vector.z);
 }
 
 void Physics::UpdateSystem(std::vector<Particle>& particles) {

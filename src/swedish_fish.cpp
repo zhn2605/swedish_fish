@@ -16,14 +16,14 @@ std::string fragmentFilePath = "./include/shader/frag.glsl";
 // Particle
 float radius = 0.2f;
 float mass = 1.0f;
-float smoothing_radius = 0.9f;
+float smoothing_radius = 3.0f;
 
 // Physics
 float delta_time = 0.0f;
 float gravity = -9.81f;
 float surface_tension = 72.0f;
 float target_density = 1.0f;
-float pressure_multiplier = 5.0f;
+float pressure_multiplier = 30.0f;
 
 int main(void) {
   // Time

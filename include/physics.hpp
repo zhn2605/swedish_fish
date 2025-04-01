@@ -24,6 +24,8 @@ public:
     bool CheckParticleCollision(Particle& particle);
     void ResolveParticleCollision(Particle& particle);
 
+    bool IsNearWall(Particle& particle);
+
     // Fluid
     float CalculateDensity(Particle& particle, std::vector<Particle>& particles);
     std::vector<float> CalculateAllDensities(std::vector<Particle>& particles);
