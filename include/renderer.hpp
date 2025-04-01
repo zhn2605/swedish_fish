@@ -29,6 +29,8 @@ public:
     void DrawContainer(Shader& shader);
     void DrawParticle(Particle& particle, Shader& shader);
     void DrawParticles(Shader& shader);
+
+    void ClearParticles();
     
     // Setters
     void SetFrameMode(bool value);

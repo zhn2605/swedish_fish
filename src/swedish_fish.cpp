@@ -23,7 +23,7 @@ float delta_time = 0.0f;
 float gravity = -9.81f;
 float surface_tension = 72.0f;
 float target_density = 1.0f;
-float pressure_multiplier = 10.0f;
+float pressure_multiplier = 5.0f;
 
 int main(void) {
   // Time
@@ -50,12 +50,15 @@ int main(void) {
   sample_particle.setPosition(glm::vec3(0.0f, 5.0f, 0.0f));
   renderer.SetDefaultParticle(sample_particle);
   // renderer.SpawnParticleGrid(500, 1.0f, 0.0f);
-  renderer.AddParticle(sample_particle);
+  // renderer.AddParticle(sample_particle);
   
   // Physics
   Physics physics(delta_time, gravity, surface_tension, target_density, pressure_multiplier);
   physics.SetBounds(renderer.container_min_bound, renderer.container_max_bound);
   renderer.UpdateParticles(physics);
+
+  // Input
+  Input input;
 
   while (app.isActive()) {
     // Calculate delta time
@@ -65,7 +68,7 @@ int main(void) {
 
     physics.SetDeltaTime(delta_time);
 
-    Input::PollEvents(app, camera, renderer, physics, delta_time);
+    input.PollEvents(app, camera, renderer, physics, delta_time);
 
     // Prepares gl buffers etc.
     renderer.PrepareDraw(shader);

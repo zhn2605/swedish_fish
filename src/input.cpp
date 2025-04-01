@@ -1,5 +1,7 @@
 #include <input.hpp>
 
+Input::Input() {}
+
 void Input::PollEvents(App& app, Camera& camera, Renderer& renderer, Physics& physics, float dt) {
     static float mouse_x = app.getWidth()/2.0f;
     static float mouse_y = app.getHeight()/2.0f;
@@ -13,6 +15,7 @@ void Input::PollEvents(App& app, Camera& camera, Renderer& renderer, Physics& ph
 
     // Check for keys
     HandleMovement(keystates, camera, dt);
+    HandleKeyAction(keystates, renderer, physics);
 
     if (renderer.IsConstantFlow()) {
         SpawnParticle(camera, renderer);
@@ -52,6 +55,27 @@ void Input::HandleMovement(const bool* keystates, Camera& camera, float dt) {
     if (keystates[SDL_SCANCODE_LCTRL]) { camera.MoveDown(speed); }
 }
 
+void Input::HandleKeyAction(const bool* keystates, Renderer& renderer, Physics& physics) {
+    // Reset simulation
+    if (keystates[SDL_SCANCODE_R] && !r_key_down) {
+        renderer.ClearParticles();
+    }
+
+    // Pause simulation
+    if (keystates[SDL_SCANCODE_P] && !p_key_down) {
+        physics.SetPause(!physics.IsPaused());
+    }
+
+    // Slow simulation speed
+    if (keystates[SDL_SCANCODE_LALT] && !lalt_key_down) {
+        if (keystates[SDL_SCANCODE_MINUS] && !minus_key_down) {
+            physics.SetSimulationSpeed(physics.GetSimulationSpeed() - 0.1f);
+        } else if (keystates[SDL_SCANCODE_EQUALS] && !equals_key_down) {
+            physics.SetSimulationSpeed(physics.GetSimulationSpeed() - 0.1f);
+        }
+    }
+}
+
 void Input::HandlePollAction(SDL_Event& event, Camera& camera, Renderer& renderer) {
     if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
         if (event.button.button == SDL_BUTTON_LEFT) {
@@ -61,6 +85,16 @@ void Input::HandlePollAction(SDL_Event& event, Camera& camera, Renderer& rendere
         if (event.button.button == SDL_BUTTON_RIGHT) {
             renderer.SetConstantFlow(!renderer.IsConstantFlow());
         }
+    }
+
+    if (event.type == SDL_EVENT_KEY_UP) {
+        SDL_Keycode keycode = event.key.scancode;
+
+        if (keycode == SDL_SCANCODE_R) { r_key_down = false; }
+        if (keycode == SDL_SCANCODE_P) { p_key_down = false; }
+        if (keycode == SDL_SCANCODE_LALT) { lalt_key_down = false; }
+        if (keycode == SDL_SCANCODE_MINUS) { minus_key_down = false; }
+        if (keycode == SDL_SCANCODE_EQUALS) { equals_key_down = false; }
     }
 }
 

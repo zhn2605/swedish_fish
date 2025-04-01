@@ -13,12 +13,20 @@
 
 class Input {
 public:
-    static void PollEvents(App& app, Camera& camera, Renderer& renderer, Physics& physics, float dt);
+    Input();
+    void PollEvents(App& app, Camera& camera, Renderer& renderer, Physics& physics, float dt);
 
 private:
-    static void SpawnParticle(Camera& camera, Renderer& renderer);
-    static void HandleMovement(const bool* keystates, Camera& camera, float dt);
-    static void HandlePollAction(SDL_Event& event, Camera& camera, Renderer& renderer);
+    void SpawnParticle(Camera& camera, Renderer& renderer);
+    void HandleMovement(const bool* keystates, Camera& camera, float dt);
+    void HandleKeyAction(const bool* keystates, Renderer& renderer, Physics& physics);
+    void HandlePollAction(SDL_Event& event, Camera& camera, Renderer& renderer);
+
+    bool p_key_down = false;
+    bool minus_key_down = false;
+    bool equals_key_down = false;
+    bool r_key_down = false;
+    bool lalt_key_down = false;
 };
 
 #endif

@@ -214,9 +214,12 @@ void Renderer::UpdateParticles(Physics& physics) {
     // for (Particle& currParticle: particles) {
     //     physics.UpdateParticle(currParticle);
     // }
-
-    physics.UpdateSystem(particles);
+    if (!physics.IsPaused()) {
+        physics.UpdateSystem(particles);
+    }
 }
+
+void Renderer::ClearParticles() { particles.clear(); }
 
 // Setters
 void Renderer::SetFrameMode(bool value) {

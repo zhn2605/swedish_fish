@@ -2,12 +2,14 @@
 
 Physics::Physics(float dt=0.1f, float a=-9.81f, float surfTens=72.0f, float tg_density=1.0f, float pm=1.0f) 
 {
-    delta_time = dt;
     accel = a;
     surface_tension = surfTens;
-
     target_density = tg_density;
     pressure_multiplier = pm;
+    
+    delta_time = dt;
+    is_paused = false;
+    simulation_speed = 1.0f;
 }
 
 /*
@@ -21,23 +23,23 @@ bool Physics::CheckContainerCollision(Particle& particle) {
     float radius = particle.getRadius();
 
     // Clamp position and register collisions
-    if (pos.y - radius <= container_min.y) { // Bottom collision
+    if (pos.y - radius <= container_min.y + EPSILON) { // Bottom collision
         particle.setPosition(glm::vec3(pos.x, container_min.y + radius, pos.z));
         collision = true;
     }
-    if (pos.x - radius <= container_min.x) { // Left collision
+    if (pos.x - radius <= container_min.x + EPSILON) { // Left collision
         particle.setPosition(glm::vec3(container_min.x + radius, pos.y, pos.z));
         collision = true;
     }
-    if (pos.x + radius >= container_max.x) { // Right collision
+    if (pos.x + radius >= container_max.x + EPSILON) { // Right collision
         particle.setPosition(glm::vec3(container_max.x - radius, pos.y, pos.z));
         collision = true;
     }
-    if (pos.z - radius <= container_min.z) { // Front collision
+    if (pos.z - radius <= container_min.z + EPSILON) { // Front collision
         particle.setPosition(glm::vec3(pos.x, pos.y, container_min.z + radius));
         collision = true;
     }
-    if (pos.z + radius >= container_max.z) { // Back collision
+    if (pos.z + radius >= container_max.z + EPSILON) { // Back collision
         particle.setPosition(glm::vec3(pos.x, pos.y, container_max.z - radius));
         collision = true;
     }
@@ -65,7 +67,7 @@ void Physics::ResolveContainerCollision(Particle& particle) {
     }
     // Right collision
     if (pos.x + radius >= container_max.x - EPSILON) {
-        if (-vel.x < 0) {
+        if (vel.x > 0) {
             particle.setVelocity(glm::vec3(-restitution * vel.x, vel.y, vel.z));
         }
     }
@@ -77,7 +79,7 @@ void Physics::ResolveContainerCollision(Particle& particle) {
     }
     // Back collision
     if (pos.z + radius >= container_max.z - EPSILON) {
-        if (-vel.z < 0) {
+        if (vel.z > 0) {
             particle.setVelocity(glm::vec3(vel.x, vel.y, -restitution * vel.z));
         }
     }
@@ -184,18 +186,27 @@ void Physics::UpdateParticle(Particle& particle, const glm::vec3& pressure_force
     
     // Final vec changes
     particle.setVelocity(dv_vector);
-
     glm::vec3 final_pos = initial_pos + (dv_vector * delta_time);
-    particle.setPosition(final_pos);
+
+    // Collision prediction
+    Particle temp_particle(particle);
+    temp_particle.setPosition(final_pos);
 
     // Collision
-    if (CheckContainerCollision(particle)) {
+    if (CheckContainerCollision(temp_particle)) {
+        final_pos = temp_particle.getPosition();
+
         ResolveContainerCollision(particle);
     }
+    // Final pos
+    particle.setPosition(final_pos);
 
     // Apply necessary updates within particle
     particle.UpdateModelMatrix();
     particle.UpdateColor();
+
+    // debug
+    printf("pos: <%f, %f, %f>\tvel: <%f, %f, %f>\n", final_pos.x, final_pos.y, final_pos.z, dv_vector.x, dv_vector.y, dv_vector.z);
 }
 
 void Physics::UpdateSystem(std::vector<Particle>& particles) {
@@ -220,6 +231,23 @@ void Physics::SetBounds(glm::vec3& min, glm::vec3& max) {
     container_max = max;
 }
 
-void Physics::SetDeltaTime(float dt) {
-    delta_time = dt;
+void Physics::SetSimulationSpeed(float value) { 
+    simulation_speed = value; 
+
+    // simple clamp
+    if (simulation_speed <= -1.0f) { simulation_speed = -1.0f; }
+    if (simulation_speed >= 4.0f) { simulation_speed = 4.0f; }
+
+    // debug
+    printf("Simulation speed: %f\n", simulation_speed);
 }
+
+void Physics::SetDeltaTime(float dt) {
+    delta_time = dt * simulation_speed;
+}
+
+void Physics::SetPause(bool value) { is_paused = value; }
+
+// Getters
+bool Physics::IsPaused() { return is_paused; }
+float Physics::GetSimulationSpeed() { return simulation_speed; }

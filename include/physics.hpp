@@ -31,17 +31,29 @@ public:
     
     // Setters
     void SetBounds(glm::vec3& min, glm::vec3& max);
+    void SetSimulationSpeed(float value);
     void SetDeltaTime(float dt);
+    void SetPause(bool value);
+
+    // Getters
+    float GetSimulationSpeed();
+    bool IsPaused();
     
 private:
+    // Container info
     glm::vec3 container_min;
     glm::vec3 container_max;
 
-    float delta_time;
+    // Fluid simulation settings
     float surface_tension;
     float accel;
     float target_density;
     float pressure_multiplier;
+
+    // Engine settings
+    float delta_time;
+    bool is_paused;
+    float simulation_speed;
 };
 
 #endif
