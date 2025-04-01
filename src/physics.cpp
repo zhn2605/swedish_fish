@@ -160,7 +160,8 @@ glm::vec3 Physics::CalculatePressureForce(Particle& particle, std::vector<Partic
             float kernel = SmoothingKernel(particle.getSmoothingRadius(), distance);
         
             // Negate (originally +=) to repel
-            pressure_force -= direction * ((pressure + other_pressure) / 2.0f) * kernel;
+            // or not??????????
+            pressure_force += direction * ((pressure + other_pressure) / 2.0f) * kernel;
         }
     }    
     return pressure_force;
