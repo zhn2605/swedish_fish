@@ -162,6 +162,41 @@ void Renderer::InitializeParticleMesh(Particle& sample_particle) {
     glBindVertexArray(0);
 }
 
+void Renderer::SpawnParticleGrid(int count, float spacing, float start_y) {
+    // Set all available space
+    glm::vec3 available_space = container_max_bound - container_min_bound;
+
+    float particle_radius = default_particle.getRadius();
+    glm::vec3 start_pos = container_min_bound + glm::vec3(particle_radius);
+    start_pos.y = start_y;
+
+    glm::vec3 end_pos = container_max_bound - glm::vec3(particle_radius);
+
+    // Calculate max particles in each direction
+    int max_x = (int)((end_pos.x - start_pos.x) / spacing);
+    int max_z = (int)((end_pos.z - start_pos.z) / spacing);
+    int particles_per_layer = max_x * max_z;
+
+    int spawned = 0;
+
+    for (int y = 0; spawned < count; y++) {
+        for (int z = 0; z < max_z && spawned < count; z++) {
+            for (int x = 0; x < max_x && spawned < count; x++) {
+                // Calculate position
+                glm::vec3 position(start_pos.x + x * spacing, start_pos.y + y * spacing, start_pos.z + z * spacing);
+
+                Particle particle(default_particle);
+                particle.setPosition(position);
+                particle.setVelocity(glm::vec3(0.0f));
+                AddParticle(particle);
+
+                spawned++;
+                printf("spawned: %d\n", spawned);
+            }
+        }
+    }
+}
+
 void Renderer::DrawParticles(Shader& shader) {
     glBindVertexArray(particle_VAO);
     

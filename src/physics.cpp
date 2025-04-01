@@ -133,20 +133,31 @@ glm::vec3 Physics::CalculatePressureForce(Particle& particle, std::vector<Partic
     float particle_density = densities[particle_index];
     float pressure = pressure_multiplier * (particle_density - target_density);
     
+    if (particle_density < target_density) { return pressure_force; }
+
     for (size_t i = 0; i < particles.size(); i++) {
         if (i == particle_index) continue;
             
         Particle& other = particles[i];
         glm::vec3 distance_vec = particle.getPosition() - other.getPosition();
         float distance = glm::length(distance_vec);
+        glm::vec3 direction = glm::normalize(distance_vec);
             
-        if (distance < particle.getSmoothingRadius() && distance > 0.0001f) {
+        if (distance == 0 || distance < 0.0001f) { 
+            float rand_x = ((rand() % (100 - (-100) + 1)) - 100) / 100;
+            float rand_y = ((rand() % (100 - (-100) + 1)) - 100) / 100;
+            float rand_z = ((rand() % (100 - (-100) + 1)) - 100) / 100;
+            
+            glm::vec3 direction = glm::normalize(glm::vec3(rand_x, rand_y, rand_z));
+        }
+
+        // TODO: Implement newton's third law of motion
+        if (distance < particle.getSmoothingRadius()) {
             // Use pre-calculated density for the neighbor
             float other_density = densities[i];
             float other_pressure = pressure_multiplier * (other_density - target_density);
             
             float kernel = SmoothingKernel(particle.getSmoothingRadius(), distance);
-            glm::vec3 direction = glm::normalize(distance_vec);
         
             // Negate (originally +=) to repel
             pressure_force -= direction * ((pressure + other_pressure) / 2.0f) * kernel;
@@ -164,11 +175,12 @@ void Physics::UpdateParticle(Particle& particle, const glm::vec3& pressure_force
 
     // Gravity / acceleration
     dv_vector.y += accel * delta_time;
-
+    
     // Fluid forces
     float mass_inverse = 1.0f / particle.getMass();
+    // dv_vector += pressure_force * mass_inverse * delta_time;
     dv_vector += pressure_force * mass_inverse * delta_time;
-
+    
     // Final vec changes
     particle.setVelocity(dv_vector);
 

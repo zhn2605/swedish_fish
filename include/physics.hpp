@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <glm/glm.hpp>
+#include <cstdlib>
 
 #include <particle.hpp>
 

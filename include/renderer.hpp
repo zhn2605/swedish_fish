@@ -24,7 +24,7 @@ public:
 
     void SetDefaultParticle(Particle& particle);
     void InitializeParticleMesh(Particle& sample_particle);
-    void SpawnParticleGrid(int count, float spacing);
+    void SpawnParticleGrid(int count, float spacing, float start_y);
 
     void DrawContainer(Shader& shader);
     void DrawParticle(Particle& particle, Shader& shader);
