@@ -21,10 +21,8 @@ public:
     // Collision
     bool CheckContainerCollision(Particle& particle);
     void ResolveContainerCollision(Particle& particle);
-    bool CheckParticleCollision(Particle& particle);
-    void ResolveParticleCollision(Particle& particle);
 
-    bool IsNearWall(Particle& particle);
+    glm::vec3 ApplyNearWallPressure(Particle& particle);
 
     // Fluid
     float CalculateDensity(Particle& particle, std::vector<Particle>& particles);
@@ -36,6 +34,7 @@ public:
     void SetSimulationSpeed(float value);
     void SetDeltaTime(float dt);
     void SetPause(bool value);
+    void ToggleTopCollision(bool value);
 
     // Getters
     float GetSimulationSpeed();
@@ -55,6 +54,7 @@ private:
     // Engine settings
     float delta_time;
     bool is_paused;
+    bool toggle_top_collision;
     float simulation_speed;
 };
 

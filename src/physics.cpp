@@ -16,7 +16,7 @@ Physics::Physics(float dt=0.1f, float a=-9.81f, float surfTens=72.0f, float tg_d
 ===============================================================================================
 Collision
 ===============================================================================================
-*/ 
+*/
 bool Physics::CheckContainerCollision(Particle& particle) {
     bool collision = false;
     glm::vec3 pos = particle.getPosition();
@@ -27,11 +27,17 @@ bool Physics::CheckContainerCollision(Particle& particle) {
         particle.setPosition(glm::vec3(pos.x, container_min.y + radius, pos.z));
         collision = true;
     }
+
+    if (pos.y + radius >= container_max.y - EPSILON && toggle_top_collision) { // Top collision
+        particle.setPosition(glm::vec3(pos.x, container_max.y - radius, pos.z));
+        collision = true;
+    }
+
     if (pos.x - radius <= container_min.x + EPSILON) { // Left collision
         particle.setPosition(glm::vec3(container_min.x + radius, pos.y, pos.z));
         collision = true;
     }
-    if (pos.x + radius >= container_max.x + EPSILON) { // Right collision
+    if (pos.x + radius >= container_max.x - EPSILON) { // Right collision
         particle.setPosition(glm::vec3(container_max.x - radius, pos.y, pos.z));
         collision = true;
     }
@@ -39,7 +45,7 @@ bool Physics::CheckContainerCollision(Particle& particle) {
         particle.setPosition(glm::vec3(pos.x, pos.y, container_min.z + radius));
         collision = true;
     }
-    if (pos.z + radius >= container_max.z + EPSILON) { // Back collision
+    if (pos.z + radius >= container_max.z - EPSILON) { // Back collision
         particle.setPosition(glm::vec3(pos.x, pos.y, container_max.z - radius));
         collision = true;
     }
@@ -59,6 +65,14 @@ void Physics::ResolveContainerCollision(Particle& particle) {
             particle.setVelocity(glm::vec3(vel.x, -restitution * vel.y, vel.z));
         }
     }
+
+    // Top collision
+    if (pos.y + radius >= container_max.y - EPSILON && toggle_top_collision) { // Top collision
+        if (vel.y > 0) {
+            particle.setVelocity(glm::vec3(vel.x, -restitution * vel.y, vel.z));
+        }
+    }
+
     // Left collision
     if (pos.x - radius <= container_min.x + EPSILON) {
         if (vel.x < 0) {
@@ -104,10 +118,10 @@ float SmoothingKernel(float r, float dst) {
 }
 
 float SmoothingKernelDerivative(float r, float dst) {
-    if (dst >= r) { return 0; }
+    // if (dst >= r) { return 0; }
+    float volume = 64 * M_PI * std::pow(r, 9) / 315;
     float f = r * r - dst * dst;
-    float scale = -24 / (M_PI * std::pow(r, 8));
-    return scale * dst * f * f;
+    return (-6 * dst * f * f) / volume;
 }
 
 float Physics::CalculateDensity(Particle& particle, std::vector<Particle>& particles) {
@@ -152,12 +166,12 @@ glm::vec3 Physics::CalculatePressureForce(Particle& particle, std::vector<Partic
         float distance = glm::length(distance_vec);
         glm::vec3 direction = glm::normalize(distance_vec);
             
-        if (distance == 0 || distance < 0.0001f) { 
+        if (distance == 0 || distance < EPSILON) { 
             float rand_x = ((rand() % (100 - (-100) + 1)) - 100) / 100;
             float rand_y = ((rand() % (100 - (-100) + 1)) - 100) / 100;
             float rand_z = ((rand() % (100 - (-100) + 1)) - 100) / 100;
             
-            glm::vec3 direction = glm::normalize(glm::vec3(rand_x, rand_y, rand_z));
+            direction = glm::normalize(glm::vec3(rand_x, rand_y, rand_z));
         }
 
         if (distance < particle.getSmoothingRadius()) {
@@ -176,25 +190,33 @@ glm::vec3 Physics::CalculatePressureForce(Particle& particle, std::vector<Partic
 }
 
 // Near Wall hanedling
-bool Physics::IsNearWall(Particle& particle) {
-    bool near_wall = false;
+glm::vec3 Physics::ApplyNearWallPressure(Particle& particle) {
+    glm::vec3 repulsion_force(0.0f);
     glm::vec3 pos = particle.getPosition();
-    float threshold = particle.getSmoothingRadius() / 2;
-    float radius = particle.getRadius();
+    float smoothing_radius = particle.getSmoothingRadius();
+    float wall_density = target_density * 2.0f;  // Higher than fluid to push particles away
+    float pressure = pressure_multiplier * (wall_density - target_density);
 
-    if (pos.x - radius <= container_min.x + threshold || pos.x + radius >= container_max.x - threshold ) {
-        printf("close to x bounds");
-        near_wall = true;
+    std::vector<glm::vec3> wall_positions = {
+        {container_min.x, pos.y, pos.z},  // Left Wall
+        {container_max.x, pos.y, pos.z},  // Right Wall
+        {pos.x, pos.y, container_min.z},  // Front Wall
+        {pos.x, pos.y, container_max.z},  // Back Wall
+    };
+
+    for (const auto& wall_pos : wall_positions) {
+        glm::vec3 distance_vec = pos - wall_pos;
+        float distance = glm::length(distance_vec);
+        glm::vec3 direction = glm::normalize(distance_vec);
+
+        if (distance < smoothing_radius) {
+            float kernel = SmoothingKernel(smoothing_radius / 2.0f, distance);  // Half-radius for walls
+            repulsion_force += direction * pressure * kernel;
+        }
     }
 
-    if (pos.z - radius <= container_min.z+ threshold || pos.z + radius >= container_max.z - threshold ) {
-        printf("close to z bounds");
-        near_wall = true;
-    }
-
-    return near_wall;
+    return repulsion_force;
 }
-
 // Updates
 void Physics::UpdateParticle(Particle& particle, const glm::vec3& pressure_force) {
     glm::vec3 initial_pos = particle.getPosition();
@@ -210,11 +232,10 @@ void Physics::UpdateParticle(Particle& particle, const glm::vec3& pressure_force
     // dv_vector += pressure_force * mass_inverse * delta_time;
     dv_vector += pressure_force * mass_inverse * delta_time;
     
-    // Final vec changes
+    // Vec changes
     particle.setVelocity(dv_vector);
     glm::vec3 final_pos = initial_pos + (dv_vector * delta_time);
 
-    // Collision prediction
     Particle temp_particle(particle);
     temp_particle.setPosition(final_pos);
 
@@ -224,9 +245,8 @@ void Physics::UpdateParticle(Particle& particle, const glm::vec3& pressure_force
 
         ResolveContainerCollision(particle);
     }
-    // Final pos
+    // ApplyNearWallPressure(particle);
     particle.setPosition(final_pos);
-    IsNearWall(particle);
 
     // Apply necessary updates within particle
     particle.UpdateModelMatrix();
@@ -242,15 +262,11 @@ void Physics::UpdateSystem(std::vector<Particle>& particles) {
 
     for (size_t i = 0; i < particles.size(); i++) {
         Particle& particle = particles[i];
-
-        // Get cached density
-        float density = densities[i];
         glm::vec3 pressure_force = CalculatePressureForce(particle, particles, densities, i);
 
         UpdateParticle(particle, pressure_force);
     }
 }
-
 
 // Setters
 void Physics::SetBounds(glm::vec3& min, glm::vec3& max) {
@@ -274,6 +290,7 @@ void Physics::SetDeltaTime(float dt) {
 }
 
 void Physics::SetPause(bool value) { is_paused = value; }
+void Physics::ToggleTopCollision(bool value) { toggle_top_collision = value; }
 
 // Getters
 bool Physics::IsPaused() { return is_paused; }

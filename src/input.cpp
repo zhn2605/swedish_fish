@@ -10,7 +10,6 @@ void Input::PollEvents(App& app, Camera& camera, Renderer& renderer, Physics& ph
     SDL_PumpEvents();
 
     // Check Keyboard States
-    int num_keys;
     const bool* keystates = SDL_GetKeyboardState(NULL);
 
     // Check for keys
@@ -71,7 +70,7 @@ void Input::HandleKeyAction(const bool* keystates, Renderer& renderer, Physics& 
         if (keystates[SDL_SCANCODE_MINUS] && !minus_key_down) {
             physics.SetSimulationSpeed(physics.GetSimulationSpeed() - 0.1f);
         } else if (keystates[SDL_SCANCODE_EQUALS] && !equals_key_down) {
-            physics.SetSimulationSpeed(physics.GetSimulationSpeed() - 0.1f);
+            physics.SetSimulationSpeed(physics.GetSimulationSpeed() + 0.1f);
         }
     }
 }
@@ -99,13 +98,13 @@ void Input::HandlePollAction(SDL_Event& event, Camera& camera, Renderer& rendere
 }
 
 void Input::SpawnParticle(Camera& camera, Renderer& renderer) {
-    float force = 13.0f;
+    float force = 3.0f;
 
     Particle particle = renderer.GetDefaultParticle();
     particle.setPosition(camera.GetEye());
     particle.setVelocity(camera.GetLookDir() * force);
 
-    glm::vec3 vel = particle.getVelocity();
+    // glm::vec3 vel = particle.getVelocity();
 
     // printf("Velocity: <%f, %f, %f>\n", vel.x, vel.y, vel.z);
     renderer.AddParticle(particle);

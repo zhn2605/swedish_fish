@@ -163,9 +163,6 @@ void Renderer::InitializeParticleMesh(Particle& sample_particle) {
 }
 
 void Renderer::SpawnParticleGrid(int count, float spacing, float start_y) {
-    // Set all available space
-    glm::vec3 available_space = container_max_bound - container_min_bound;
-
     float particle_radius = default_particle.getRadius();
     glm::vec3 start_pos = container_min_bound + glm::vec3(particle_radius);
     start_pos.y = start_y;
@@ -175,7 +172,6 @@ void Renderer::SpawnParticleGrid(int count, float spacing, float start_y) {
     // Calculate max particles in each direction
     int max_x = (int)((end_pos.x - start_pos.x) / spacing);
     int max_z = (int)((end_pos.z - start_pos.z) / spacing);
-    int particles_per_layer = max_x * max_z;
 
     int spawned = 0;
 
