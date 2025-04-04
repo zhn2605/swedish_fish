@@ -132,7 +132,7 @@ float Physics::CalculateDensity(Particle& particle, std::vector<Particle>& parti
         float distance = glm::length(distance_vec);
 
         if (distance < particle.getSmoothingRadius()) {
-            float influence = SmoothingKernel(particle.getSmoothingRadius(), distance);
+            float influence = SmoothingKernelDerivative(particle.getSmoothingRadius(), distance);
             density += other.getMass() * influence;
         }
     }
@@ -156,7 +156,7 @@ glm::vec3 Physics::CalculatePressureForce(Particle& particle, std::vector<Partic
     float particle_density = densities[particle_index];
     float pressure = pressure_multiplier * (particle_density - target_density);
     
-    if (particle_density < target_density) { return pressure_force; }
+    // if (particle_density < target_density) { return pressure_force; }
 
     for (size_t i = 0; i < particles.size(); i++) {
         if (i == particle_index) continue;
@@ -179,7 +179,7 @@ glm::vec3 Physics::CalculatePressureForce(Particle& particle, std::vector<Partic
             float other_density = densities[i];
             float other_pressure = pressure_multiplier * (other_density - target_density);
             
-            float kernel = SmoothingKernel(particle.getSmoothingRadius(), distance);
+            float kernel = SmoothingKernelDerivative(particle.getSmoothingRadius(), distance);
         
             // Negate (originally +=) to repel
             // or not??????????
@@ -210,7 +210,7 @@ glm::vec3 Physics::ApplyNearWallPressure(Particle& particle) {
         glm::vec3 direction = glm::normalize(distance_vec);
 
         if (distance < smoothing_radius) {
-            float kernel = SmoothingKernel(smoothing_radius / 2.0f, distance);  // Half-radius for walls
+            float kernel = SmoothingKernelDerivative(smoothing_radius / 2.0f, distance);  // Half-radius for walls
             repulsion_force += direction * pressure * kernel;
         }
     }

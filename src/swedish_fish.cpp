@@ -22,8 +22,8 @@ float smoothing_radius = 1.0f;
 float delta_time = 0.0f;
 float gravity = -9.81f;
 float surface_tension = 72.0f;
-float target_density = 5.0f;
-float pressure_multiplier = 5.0f;
+float target_density = 4.0f;
+float pressure_multiplier = 2.0f;
 
 int main(void) {
   // Time
@@ -49,7 +49,7 @@ int main(void) {
   Particle sample_particle(radius, mass, 36, 18, smoothing_radius);
   sample_particle.setPosition(glm::vec3(0.0f, 5.0f, 0.0f));
   renderer.SetDefaultParticle(sample_particle);
-  renderer.SpawnParticleGrid(1000, 0.5f, 0.0f); // particle count, spacing, y position
+  renderer.SpawnParticleGrid(700, 0.5f, 0.0f); // particle count, spacing, y position
   // renderer.AddParticle(sample_particle);
   
   // Physics
