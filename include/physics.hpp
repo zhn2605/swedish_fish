@@ -12,7 +12,7 @@
 
 class Physics {
 public:
-    Physics(float dt, float a, float surfTens, float tg_density, float pm);
+    Physics(float dt, float a, float surfTens, float tg_density, float pm, float visc_str);
 
     // Update
     void UpdateSystem(std::vector<Particle>& particles); // over arching update function
@@ -34,11 +34,13 @@ public:
     void SetSimulationSpeed(float value);
     void SetDeltaTime(float dt);
     void SetPause(bool value);
+    void SetGravity(bool value);
     void ToggleTopCollision(bool value);
 
     // Getters
     float GetSimulationSpeed();
     bool IsPaused();
+    bool GetGravity();
     
 private:
     // Container info
@@ -47,6 +49,7 @@ private:
 
     // Fluid simulation settings
     float surface_tension;
+    float viscosity_strength;
     float accel;
     float target_density;
     float pressure_multiplier;
@@ -55,6 +58,7 @@ private:
     float delta_time;
     bool is_paused;
     bool toggle_top_collision;
+    bool toggle_gravity;
     float simulation_speed;
 };
 

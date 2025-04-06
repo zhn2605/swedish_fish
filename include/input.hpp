@@ -23,6 +23,7 @@ private:
     void HandlePollAction(SDL_Event& event, Camera& camera, Renderer& renderer);
 
     bool p_key_down = false;
+    bool g_key_down = false;
     bool minus_key_down = false;
     bool equals_key_down = false;
     bool r_key_down = false;

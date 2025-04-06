@@ -58,19 +58,29 @@ void Input::HandleKeyAction(const bool* keystates, Renderer& renderer, Physics& 
     // Reset simulation
     if (keystates[SDL_SCANCODE_R] && !r_key_down) {
         renderer.ClearParticles();
+        r_key_down = true;
     }
 
     // Pause simulation
     if (keystates[SDL_SCANCODE_P] && !p_key_down) {
-        physics.SetPause(!physics.IsPaused());
+        physics.SetPause(!physics.IsPaused());false;
+        p_key_down = true;
+    }
+
+    // Toggle gravity
+    if (keystates[SDL_SCANCODE_G] && !g_key_down) {
+        physics.SetGravity(!physics.GetGravity());
+        g_key_down = true;
     }
 
     // Slow simulation speed
     if (keystates[SDL_SCANCODE_LALT] && !lalt_key_down) {
         if (keystates[SDL_SCANCODE_MINUS] && !minus_key_down) {
             physics.SetSimulationSpeed(physics.GetSimulationSpeed() - 0.1f);
+            minus_key_down = true;
         } else if (keystates[SDL_SCANCODE_EQUALS] && !equals_key_down) {
             physics.SetSimulationSpeed(physics.GetSimulationSpeed() + 0.1f);
+            equals_key_down = true;
         }
     }
 }
@@ -91,6 +101,7 @@ void Input::HandlePollAction(SDL_Event& event, Camera& camera, Renderer& rendere
 
         if (keycode == SDL_SCANCODE_R) { r_key_down = false; }
         if (keycode == SDL_SCANCODE_P) { p_key_down = false; }
+        if (keycode == SDL_SCANCODE_G) { g_key_down = false; }
         if (keycode == SDL_SCANCODE_LALT) { lalt_key_down = false; }
         if (keycode == SDL_SCANCODE_MINUS) { minus_key_down = false; }
         if (keycode == SDL_SCANCODE_EQUALS) { equals_key_down = false; }

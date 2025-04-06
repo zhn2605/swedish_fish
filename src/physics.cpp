@@ -1,14 +1,16 @@
 #include <physics.hpp>
 
-Physics::Physics(float dt=0.1f, float a=-9.81f, float surfTens=72.0f, float tg_density=1.0f, float pm=1.0f) 
+Physics::Physics(float dt=0.1f, float a=-9.81f, float surfTens=72.0f, float tg_density=1.0f, float pm=1.0f, float visc_str=0.1f) 
 {
     accel = a;
     surface_tension = surfTens;
     target_density = tg_density;
     pressure_multiplier = pm;
+    viscosity_strength = visc_str;
     
     delta_time = dt;
     is_paused = false;
+    toggle_gravity = true;
     simulation_speed = 1.0f;
 }
 
@@ -121,7 +123,7 @@ float SmoothingKernelDerivative(float r, float dst) {
     // if (dst >= r) { return 0; }
     float volume = 64 * M_PI * std::pow(r, 9) / 315;
     float f = r * r - dst * dst;
-    return (-6 * dst * f * f) / volume;
+    return (-6 * dst * f * f) / volume * r;
 }
 
 float Physics::CalculateDensity(Particle& particle, std::vector<Particle>& particles) {
@@ -152,6 +154,7 @@ std::vector<float> Physics::CalculateAllDensities(std::vector<Particle>& particl
 
 glm::vec3 Physics::CalculatePressureForce(Particle& particle, std::vector<Particle>& particles, std::vector<float>& densities, size_t particle_index) {
     glm::vec3 pressure_force(0.0f);
+    glm::vec3 viscosity_force(0.0f);
 
     float particle_density = densities[particle_index];
     float pressure = pressure_multiplier * (particle_density - target_density);
@@ -179,14 +182,21 @@ glm::vec3 Physics::CalculatePressureForce(Particle& particle, std::vector<Partic
             float other_density = densities[i];
             float other_pressure = pressure_multiplier * (other_density - target_density);
             
-            float kernel = SmoothingKernelDerivative(particle.getSmoothingRadius(), distance);
+            float pressure_kernel = SmoothingKernelDerivative(particle.getSmoothingRadius(), distance);
+
+
+            // Calculate viscosity force
+            float viscosity_influence = SmoothingKernel(particle.getSmoothingRadius(), distance);
+            viscosity_force += (other.getVelocity() - particle.getVelocity()) * viscosity_influence;
         
             // Negate (originally +=) to repel
             // or not??????????
-            pressure_force += direction * ((pressure + other_pressure) / 2.0f) * kernel;
+            pressure_force += direction * ((pressure + other_pressure) / 2.0f) * pressure_kernel;
         }
-    }    
-    return pressure_force;
+    }
+
+    viscosity_force *= viscosity_strength;
+    return pressure_force + viscosity_force;
 }
 
 // Near Wall hanedling
@@ -225,7 +235,9 @@ void Physics::UpdateParticle(Particle& particle, const glm::vec3& pressure_force
     glm::vec3 dv_vector = initial_vel;
 
     // Gravity / acceleration
-    dv_vector.y += accel * delta_time;
+    if (toggle_gravity) {
+        dv_vector.y += accel * delta_time;
+    }
     
     // Fluid forces
     float mass_inverse = 1.0f / particle.getMass();
@@ -290,8 +302,10 @@ void Physics::SetDeltaTime(float dt) {
 }
 
 void Physics::SetPause(bool value) { is_paused = value; }
+void Physics::SetGravity(bool value) { toggle_gravity = value; }
 void Physics::ToggleTopCollision(bool value) { toggle_top_collision = value; }
 
 // Getters
 bool Physics::IsPaused() { return is_paused; }
+bool Physics::GetGravity() { return toggle_gravity; }
 float Physics::GetSimulationSpeed() { return simulation_speed; }
